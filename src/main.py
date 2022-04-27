@@ -6,14 +6,14 @@ import matplotlib as plt
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 # hsv
-lower_red = np.array([156, 43, 46])       # 红色阈值下界
-higher_red = np.array([180, 255, 255])     # 红色阈值上界
-lower_yellow = np.array([15, 140, 210])   # 黄色阈值下界
-higher_yellow = np.array([35, 255, 255])  # 黄色阈值上界
-lower_blue = np.array([90,80,150])       # 蓝色阈值下界
-higher_blue = np.array([140,240,255])     # 蓝色阈值上界
-lower_green = np.array([35,43,46])      # 绿色阈值下界
-higher_green = np.array([77,255,255])     # 绿色阈值上界
+lower_red = np.array([156, 43, 46])       # define lower bound of "red"
+higher_red = np.array([180, 255, 255])    # define higher bound of "red"
+lower_yellow = np.array([15, 140, 210])   # define lower bound of "yellow"
+higher_yellow = np.array([35, 255, 255])  # define higher bound of "yellow"
+lower_blue = np.array([90,80,150])       # define lower bound of "blue"
+higher_blue = np.array([140,240,255])    # define higher bound of "blue"
+lower_green = np.array([35,43,46])      # define lower bound of "green"
+higher_green = np.array([77,255,255])   # define higher bound of "green"
 
 cap = cv2.VideoCapture(0)
 
@@ -21,25 +21,26 @@ while True:
     ret, image = cap.read()
 
     # image = cv2.imread("shapes.png")
-    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # 默认是BRG，要转化成RGB，颜色才正常
-    image = cv2.resize(image, dsize=(648, 486))
+    # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # transfer color space from BGR to RGB
+    image = cv2.resize(image, dsize=(648, 486)) # set the window in a fixed size.
 
 
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    img_erode = cv2.erode(img_hsv, None, iterations=2)
 
-    mask_red = cv2.inRange(img_hsv, lower_red, higher_red)  # 可以认为是过滤出红色部分，获得红色的掩膜
+    mask_red = cv2.inRange(img_erode, lower_red, higher_red)  # 可以认为是过滤出红色部分，获得红色的掩膜
     mask_red = cv2.medianBlur(mask_red, 7)
-    mask_yellow = cv2.inRange(img_hsv, lower_yellow, higher_yellow)
+    mask_yellow = cv2.inRange(img_erode, lower_yellow, higher_yellow)
     mask_yellow = cv2.medianBlur(mask_yellow, 7)
-    mask_blue = cv2.inRange(img_hsv, lower_blue, higher_blue)
+    mask_blue = cv2.inRange(img_erode, lower_blue, higher_blue)
     mask_blue = cv2.medianBlur(mask_blue, 7)
-    mask_green = cv2.inRange(img_hsv, lower_green, higher_green)
+    mask_green = cv2.inRange(img_erode, lower_green, higher_green)
     mask_green = cv2.medianBlur(mask_green, 7)
 
-    cnts1, hierarchy1 = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)  # 轮廓检测 #红色
-    cnts2, hierarchy2 = cv2.findContours(mask_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cnts3, hierarchy3 = cv2.findContours(mask_yellow, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cnts4, hierarchy4 = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    cnts1, hierarchy1 = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # 轮廓检测 #红色
+    cnts2, hierarchy2 = cv2.findContours(mask_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts3, hierarchy3 = cv2.findContours(mask_yellow, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts4, hierarchy4 = cv2.findContours(mask_green, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     image = image.copy()
 

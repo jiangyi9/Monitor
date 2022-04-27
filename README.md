@@ -14,6 +14,24 @@ The concrete tasks are:
 
 
 
+## Questions to be solved (will update periodically)
+
+1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen.)? 
+
+   Or simply <font color='red'>detect</font> objects by color and location (i.e. in each time point, the system only needs to know there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube.)?
+
+2. Will the webcam always places right above the cubes (i.e. the webcam can only see the upper side of cubes, so this is a <font color='red'>2D dection task</font>)?
+
+   Or this is a <font color='red'>3D dection task</font>?
+
+3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second?
+
+
+
+
+
+
+
 ## Access the video stream (not be tested yet)
 
 OpenCV provides a class to help us access video files, video streams, and cameras. We assume the RTSP is used to transmit the video, the example address is: rtsp://192.168.1.64/1. HTTP can also be used if required.
@@ -59,16 +77,63 @@ cv2.destroyAllWindows()
 
 
 
-## Detect rectangles, identify their colors and locations
+## Detect rectangles, identify their colors and locations (completed)
 
-We have read the video. Each frame of the video can be seen as a image.
+We have read the video. Each frame of the video can be seen as an image.
 
 ```
 cap = cv2.VideoCapture(0) # load the PC webcam
 ret, image = cap.read() # ret is a flag
 ```
 
+Now, we want to detect all <font color='red'>red cubes</font> in the image.
 
+Note that OpenCV-Python uses BGR color space, so we should transfer it to HSV color space.
 
+```
+img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) # img_hsv is an image that stores HSV color information.
+img_erode = cv2.erode(img_hsv, None, iterations=2) # erode the image to help detect edges better.
+```
 
+Next, we get the <font color='red'>red</font> areas (i.e. get the red masks) in the image. We define <font color='red'>red</font> by limiting its higher_bound and lower_bound (in HSV color space). Then we use cv2.inRange() to filter the <font color='red'>red</font> color. For cv2.inRange(), the area in img_hsv that is between higher_bound and lower_bound is marked as white (0), and others marked as black (255). (see more about cv2.inRange() [here](https://docs.opencv.org/3.4/da/d97/tutorial_threshold_inRange.html))
+
+Afterwards, we use cv2.medianBlur() to blur the masked image. The goal of this step is to smooth the image, so some noisy points can be eliminated. Note that there are multiple blur methods to be select. (see [here](https://opencv24-python-tutorials.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_filtering/py_filtering.html))
+
+Then, we detect edges of <font color='red'>red</font> masks using cv2.findContours(). Each contour is stored as a vector of points, and cnts1 stores all edge information. (see more about cv2.findContours [here](https://docs.opencv.org/4.x/d4/d73/tutorial_py_contours_begin.html))
+
+```
+lower_red = np.array([156, 43, 46])       # lower bound of "red"
+higher_red = np.array([180, 255, 255])    # higher bound of "red"
+
+mask_red = cv2.inRange(img_erode, lower_red, higher_red)  # get red masks
+mask_red = cv2.medianBlur(mask_red, 7)
+
+cnts1, hierarchy1 = cv2.findContours(mask_red, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # detect, then store the edge of each red area in cnts1.
+```
+
+Now we get the edges of red masks. Next draw the edges of each red area as a rectangle.
+
+```
+for cnt in cnts1: #red (BGR color space here)
+        (x, y, w, h) = cv2.boundingRect(cnt)  # get 4 points of cnt as x,y,w,h.
+        rect = cv2.minAreaRect(cnt) # get the information of the Smallest External Rectangle in rect. rect is a 1*3 vector: (center point, width and height, rotation angle).
+        area = cv2.contourArea(cnt) # get the area of the rectangle
+        if (area < 2000): # if the area is too small, we jujst ignore it.
+            continue
+        box = cv2.boxPoints(rect) #  get 4 vertex coordinates of the Smallest External Rectangle in box.
+        box = np.int0(box) # Rounding up
+        
+        # get the center point coordinate of the rectangle
+        cx = int(rect[0][0])
+        cy = int(rect[0][1])
+        # print(rect[2]) # show the rotation angle
+        image = cv2.drawContours(image, [box], 0, (0, 0, 255), 3) # draw the edge.
+
+        # draw the center point of the rectangle
+        image = cv2.line(image,(cx+10,cy),(cx-10,cy),(0, 0, 255),2)
+        image = cv2.line(image,(cx,cy+10),(cx,cy-10),(0, 0, 255),2)
+        
+        # show the color word.
+        cv2.putText(image, 'red', (x, y - 5), font, 0.7, (0, 0, 255), 2)
+```
 
