@@ -16,15 +16,17 @@ The concrete tasks are:
 
 ## Questions to be solved (will update periodically)
 
-1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen.)? 
+1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen) ? 
 
-   Or simply <font color='red'>detect</font> objects by color and location (i.e. in each time point, the system only needs to know there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube.)?
+   Or simply <font color='red'>detect</font> objects by color and location (in each time point, the system only needs to know e.g. there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube) ?
 
 2. Will the webcam always places right above the cubes (i.e. the webcam can only see the upper side of cubes, so this is a <font color='red'>2D dection task</font>)?
 
    Or this is a <font color='red'>3D dection task</font>?
 
 3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second?
+
+3. Do you have the RTSP or HTTP address of the camera? I want to directly access the camera, so it can achieve better accuracy.
 
 
 
