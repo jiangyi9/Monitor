@@ -26,7 +26,13 @@ The concrete tasks are:
 
 3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second?
 
-3. Do you have the RTSP or HTTP address of the camera? I want to directly access the camera, so it can achieve better accuracy.
+4. Do you have the RTSP / HTTP / WSS address of the camera?
+
+5. About the upper-left cubes, do I need to detect them? Or can I remove them from the webcam?
+
+6. When can I take the RPLidar?
+
+3. About Web of Things: Is there any tutorials that can tell me how to export location data into the Web of Things system?
 
 
 

@@ -9,7 +9,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 # hsv
 lower_red = np.array([0, 100, 150])       # define lower bound of "red"
 higher_red = np.array([10, 255, 255])    # define higher bound of "red"
-lower_yellow = np.array([23, 80, 170])   # define lower bound of "yellow"
+lower_yellow = np.array([22, 80, 100])   # define lower bound of "yellow"
 higher_yellow = np.array([33, 130, 255])  # define higher bound of "yellow"
 lower_blue = np.array([90,80,150])       # define lower bound of "blue"
 higher_blue = np.array([140,240,255])    # define higher bound of "blue"
@@ -21,14 +21,14 @@ cap = cv2.VideoCapture(0)
 while True:
     # ret, image = cap.read()
 
-    # image = cv2.imread("img_test1.png")
-    image = ImageGrab.grab(bbox=(100, 161, 1141, 610))
-    image = np.array(image)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # transfer color space from BGR to RGB
-    image = cv2.resize(image, dsize=(1280, 720)) # set the window in a fixed size (648, 486).
+    image = cv2.imread("img_test1.png")
+    # image = ImageGrab.grab(bbox=(100, 100, 580, 400))
+    # image = np.array(image)
+    # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # transfer color space from BGR to RGB
+    image = cv2.resize(image, dsize=(1200, 720)) # set the window in a fixed size (648, 486).
 
 
-    img_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+    img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     img_erode = cv2.erode(img_hsv, None, iterations=2)
 
     mask_red = cv2.inRange(img_erode, lower_red, higher_red)  # 可以认为是过滤出红色部分，获得红色的掩膜
@@ -51,7 +51,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 100):#小于2000就跳过
+        if (area < 60):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
@@ -70,7 +70,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 100):#小于200就跳过
+        if (area < 60):#小于200就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box) #取整
@@ -89,13 +89,19 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 100):#小于2000就跳过
+        if (area < 60):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         # print(rect[2])#打印旋转角度
+
+        cnt_len = cv2.arcLength(cnt[0], True)
+        cnt = cv2.approxPolyDP(cnt[0], 0.02*cnt_len, True)
+        if len(cnt) >= 4:
+            image = cv2.drawContours(image, [cnt], -1, (255, 255, 0), 3 )
+        
         image = cv2.drawContours(image, [box], 0, (0, 255, 255), 3)#画旋转方框
 
         #image = cv2.circle(image,(cx,cy),4,(0, 0, 255),3)
@@ -108,7 +114,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 100):#小于2000就跳过
+        if (area < 60):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
