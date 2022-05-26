@@ -21,11 +21,11 @@ cap = cv2.VideoCapture(0)
 while True:
     # ret, image = cap.read()
 
-    image = cv2.imread("img_test1.png")
+    image = cv2.imread("img_test2.png")
     # image = ImageGrab.grab(bbox=(100, 100, 580, 400))
     # image = np.array(image)
     # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # transfer color space from BGR to RGB
-    image = cv2.resize(image, dsize=(1200, 720)) # set the window in a fixed size (648, 486).
+    image = cv2.resize(image, dsize=(1000, 600)) # set the window in a fixed size (648, 486).
 
 
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -51,7 +51,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 60):#小于2000就跳过
+        if (area < 2):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
@@ -70,7 +70,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 60):#小于200就跳过
+        if (area < 2):#小于200就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box) #取整
@@ -89,7 +89,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 60):#小于2000就跳过
+        if (area < 0):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
@@ -114,7 +114,7 @@ while True:
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 60):#小于2000就跳过
+        if (area < 50):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
