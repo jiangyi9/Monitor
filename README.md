@@ -16,23 +16,31 @@ The concrete tasks are:
 
 ## Questions to be solved (will update periodically)
 
-1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen) ? 
+1. The RpLidar uses (angle, distance) pair to present the location of a point, which is different from the webcam's (x, y) format. Can I directly export the (angle, distance) pair of each cubes? Or do I need to transform them to (x, y) format (this would be very hard, because I should first know the exact location of the RpLidar)? （Yes, we should transform it to (x, y) format)
 
-   Or simply <font color='red'>detect</font> objects by color and location (in each time point, the system only needs to know e.g. there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube) ?
+1. Where should I put the RpLidar? Is it a fixed place? I want to know this because the design of monitoring system depends largely on the location of RpLidar. (depend on myself)
 
-2. Will the webcam always places right above the cubes (i.e. the webcam can only see the upper side of cubes, so this is a <font color='red'>2D dection task</font>)?
+1. RpLidar can only detect the edges (or say: the closest shelter), so if 2 cubes locate at the same angle (one closer, one farther), then RpLidar cannot detect the farther one. So I don't need to detect the farther one, right? (Yes)
 
-   Or this is a <font color='red'>3D dection task</font>?
+1. It could be very challenging to deal with the case that 2 cubes are together. (partly because RpLidar cannot detect the color of the cube). (simply dismiss this case, because it's very edge case)
 
-3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second?
+1. If I put the RpLidar on the desk, I'm not sure whether the RpLidar can detect cubes on the belt (because these cubes are higher than the desk and the RpLidar). (事实上这个location数据是三维的。所以只要把在履带上的cube加一个height就行了)
 
-4. Do you have the RTSP / HTTP / WSS address of the camera?
+1. A global question: how does the webcam and the RpLidar work together in the monitor system? Are they two invidual parts? （最终目标：发现桌面上的所有cube。webcam起主要作用，RpLidar起次要作用。）
 
-5. About the upper-left cubes, do I need to detect them? Or can I remove them from the webcam?
+   
 
-6. When can I take the RPLidar?
+   
 
-3. About Web of Things: Is there any tutorials that can tell me how to export location data into the Web of Things system?
+
+
+
+
+
+
+
+
+
 
 
 
@@ -145,3 +153,24 @@ for cnt in cnts1: #red (BGR color space here)
         cv2.putText(image, 'red', (x, y - 5), font, 0.7, (0, 0, 255), 2)
 ```
 
+
+
+
+
+1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen) ? 
+
+   Or simply <font color='red'>detect</font> objects by color and location (in each time point, the system only needs to know e.g. there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube) ?
+
+   A: the second one (simply detect)
+
+2. Will the webcam always places right above the cubes (i.e. the webcam can only see the upper side of cubes, so this is a <font color='red'>2D dection task</font>)?
+
+   Or this is a <font color='red'>3D dection task</font>? (approx. 2d)
+
+3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second? (the time that I enter the button, it's only one frame)
+
+4. Do you have the RTSP / HTTP / WSS address of the camera? (maybe yes)
+
+5. About the upper-left cubes, do I need to detect them? Or can I remove them from the webcam? (we don't consider these cubes)
+
+6. About Web of Things: Is there any tutorials that can tell me how to export location data into the Web of Things system?
