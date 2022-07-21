@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def generate_chessboard(cube_cm=2., pattern_size=(7, 8), scale=37.79527559055118):
+def generate_chessboard(cube_cm=3, pattern_size=(8, 7), scale=50):
     """
     generate chessboard image with given cube length, which adapts to A4 paper print
     :param cube_cm: float, single cube length in cm
@@ -39,7 +39,7 @@ def generate_chessboard(cube_cm=2., pattern_size=(7, 8), scale=37.79527559055118
                     fill_color = (0 if (fill_color == 255) else 255)
 
     # add border around the chess
-    chessboard = cv2.copyMakeBorder(image, 30, 30, 30, 30, borderType=cv2.BORDER_CONSTANT, value=(255, 255, 255))
+    chessboard = cv2.copyMakeBorder(image, 120, 120, 120, 120, borderType=cv2.BORDER_CONSTANT, value=(255, 255, 255))
     cv2.imwrite('/home/jelly/Desktop/Monitor/chessboard.png', chessboard)
 
 generate_chessboard()
