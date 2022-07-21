@@ -166,7 +166,7 @@ def detect():
     #     # cap.release()
     #     cv2.destroyAllWindows()
     #     break
-    cv2.imwrite('image_detection.png', image)
+    # cv2.imwrite('image_detection.png', image)
     point_array = np.array(point_list)
     point_array = point_array.reshape(-1,2)
 

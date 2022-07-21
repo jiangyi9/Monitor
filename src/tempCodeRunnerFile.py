@@ -1,1 +1,1 @@
-keyboard.wait()
+37
