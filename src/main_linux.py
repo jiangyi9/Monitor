@@ -1,3 +1,4 @@
+from pickle import TRUE
 import cv2
 import numpy as np
 
@@ -5,6 +6,14 @@ import numpy as np
 import pyscreenshot as ImageGrab
 import sys
 import keyboard
+pic_grab_path = "/home/jelly/Desktop/Monitor/pic.png"
+pic_undistorted_path = "/home/jelly/Desktop/Monitor/img_undistorted.png"
+pic_detected_path = "/home/jelly/Desktop/Monitor/image_detection.png"
+keyboard_flag = 0
+
+def get_screenshot():
+    pic = ImageGrab.grab()
+    pic.save(pic_grab_path)
 
 
 def abc(x):
@@ -17,18 +26,12 @@ def abc(x):
     if x.event_type == 'down' and x.name == b.name:
         print("你按下了p键")
 
-        pic = ImageGrab.grab()
-        pic.save("/home/jelly/Desktop/Monitor/pic.png")
+        # get_screenshot()
 
-        frame = cv2.imread("/home/jelly/Desktop/Monitor/pic.png")
-        cv2.imwrite('/home/jelly/Desktop/Monitor/img_undistorted.png', undistort(frame))
+        frame = cv2.imread(pic_grab_path)
+        cv2.imwrite(pic_undistorted_path, undistort(frame))
 
         detect()
-    
-    if x.event_type == 'down' and x.name == c.name:
-        print("你按下了q键")
-        sys.exit(0)
-
 
 
 
@@ -71,12 +74,16 @@ def detect():
 
     cap = cv2.VideoCapture(0)
 
-    point_list = []
+    point_list = [] # global point list
+    yellow_point_list = [] # yellow point list
+    red_point_list = [] # red point list
+    blue_point_list = [] # blue point list
+    green_point_list = [] # green point list
 
 # while True:
     # ret, image = cap.read()
 
-    image = cv2.imread("/home/jelly/Desktop/Monitor/img_undistorted.png")
+    image = cv2.imread(pic_undistorted_path)
     # image = ImageGrab.grab(bbox=(100, 100, 580, 400))
     # image = np.array(image)
     # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)  # transfer color space from BGR to RGB
@@ -114,6 +121,8 @@ def detect():
         cy = int(rect[0][1])
         point_list.append(cx)
         point_list.append(cy)
+        red_point_list.append(cx)
+        red_point_list.append(cy)
         # print(rect[2])#打印旋转角度
         # image = cv2.drawContours(image, [box], 0, (0, 0, 255), 3)#画旋转方框
 
@@ -135,6 +144,8 @@ def detect():
         cy = int(rect[0][1])
         point_list.append(cx)
         point_list.append(cy)
+        blue_point_list.append(cx)
+        blue_point_list.append(cy)
         # print(rect[2]) #打印旋转角度
         # image = cv2.drawContours(image, [box], 0, (255, 0, 0), 3) #画旋转方框
 
@@ -156,6 +167,8 @@ def detect():
         cy = int(rect[0][1])
         point_list.append(cx)
         point_list.append(cy)
+        yellow_point_list.append(cx)
+        yellow_point_list.append(cy)
         # print(rect[2])#打印旋转角度
 
         cnt_len = cv2.arcLength(cnt[0], True)
@@ -183,6 +196,8 @@ def detect():
         cy = int(rect[0][1])
         point_list.append(cx)
         point_list.append(cy)
+        green_point_list.append(cx)
+        green_point_list.append(cy)
         # print(cx, cy)
         # print(rect[2])#打印旋转角度
         # image = cv2.drawContours(image, [box], 0, (0, 255, 0), 3)#画旋转方框
@@ -199,26 +214,24 @@ def detect():
     #     # cap.release()
     #     cv2.destroyAllWindows()
     #     break
-    cv2.imwrite('/home/jelly/Desktop/Monitor/image_detection.png', image)
+    cv2.imwrite(pic_detected_path, image)
     point_array = np.array(point_list)
     point_array = point_array.reshape(-1,2)
+    red_point_array = np.array(red_point_list)
+    red_point_array = red_point_array.reshape(-1,2)
+    blue_point_array = np.array(blue_point_list)
+    blue_point_array = blue_point_array.reshape(-1,2)
+    yellow_point_array = np.array(yellow_point_list)
+    yellow_point_array = yellow_point_array.reshape(-1,2)
+    green_point_array = np.array(green_point_list)
+    green_point_array = green_point_array.reshape(-1,2)
+    print(green_point_array[np.lexsort(green_point_array.T)])
 
 
 if __name__=="__main__":  
 
-    # while True:
-    #     if keyboard.wait("p"):
-    #         print("You pressed p")
-
-    #         pic = ImageGrab.grab()
-    #         pic.save("/home/jelly/Desktop/Monitor/pic.png")
-
-    #         frame = cv2.imread("/home/jelly/Desktop/Monitor/pic.png")
-    #         cv2.imwrite('/home/jelly/Desktop/Monitor/img_undistorted.png', undistort(frame))
-
-    #         detect()
-    #     elif keyboard.wait("1"):
-    #         break
-
     keyboard.hook(abc)
-    keyboard.wait()
+    while True:
+        input = keyboard.read_key()
+        if input=='q':
+            break
