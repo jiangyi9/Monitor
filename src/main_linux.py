@@ -2,41 +2,98 @@ from pickle import TRUE
 from re import X
 import cv2
 import numpy as np
+from json import JSONEncoder
+import json
 
 # from PIL import ImageGrab
 import pyscreenshot as ImageGrab
 import sys
 import keyboard
+
 pic_grab_path = "/home/jelly/Desktop/Monitor/pic.png"
 pic_undistorted_path = "/home/jelly/Desktop/Monitor/img_undistorted.png"
 pic_detected_path = "/home/jelly/Desktop/Monitor/image_detection.png"
 keyboard_flag = 0
 
-center_x = 900
+# logic center of the camera (be used for point correction)
+center_x = 880
 center_y = 700
 
-HIGH = 1
+# the place of the fixed arm
+fixed_arm_x = 1207
+fixed_arm_y = 763
+
+# the place of the moving arm
+moving_arm_x = 992
+moving_arm_y = 157
+
+# define the height of the desk (LOW) and the track (HIGH)
 LOW = 0
+HIGH = 1
 
-corner_left_1_x = 198
-corner_left_1_y = 183
-corner_left_2_x = 320
-corner_left_2_y = 93
-corner_left_3_x = 940
-corner_left_3_y = 918
-corner_left_4_x = 812
-corner_left_4_y = 1014
+# define the maximum range of arms
+MAX_RANGE_OF_FIXED_ARM = 512
+MAX_RANGE_OF_MOVING_ARM = 512
 
-corner_right_1_x = 1765
-corner_right_1_y = 175
-corner_right_2_x = 1897
-corner_right_2_y = 230
+# the corner points of the left tracker
+corner_left_1_x = 187
+corner_left_1_y = 166
+corner_left_2_x = 316
+corner_left_2_y = 80
+corner_left_3_x = 954
+corner_left_3_y = 928
+corner_left_4_x = 815
+corner_left_4_y = 1028
+
+# the corner points of the right tracker
+corner_right_1_x = 1760
+corner_right_1_y = 157
+corner_right_2_x = 1910
+corner_right_2_y = 226
 corner_right_3_x = 1627
 corner_right_3_y = 943
 corner_right_4_x = 1477
 corner_right_4_y = 880
 
+# define two lists to store cubes assigned to two arms, respectively.
+cubes_assigned_to_fixed_arm = []
+cubes_assigned_to_moving_arm = []
+
+# JSON encoder
+class NumpyArrayEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return JSONEncoder.default(self, obj)
+
+def convert_pix_to_mm(number, arm):
+    converting_coefficient = 25/39
+    return int((number-arm)*converting_coefficient)
+
+# assign cubes to the closest arm
+def assign_arm(point_array):
+    for point in point_array:
+        distance_to_the_fixed_arm = (point[0]-fixed_arm_x)*(point[0]-fixed_arm_x) + (point[1]-fixed_arm_y)*(point[1]-fixed_arm_y)
+        distance_to_the_moving_arm = (point[0]-moving_arm_x)*(point[0]-moving_arm_x) + (point[1]-moving_arm_y)*(point[1]-moving_arm_y)
+        if distance_to_the_fixed_arm > MAX_RANGE_OF_FIXED_ARM*MAX_RANGE_OF_FIXED_ARM and distance_to_the_moving_arm > MAX_RANGE_OF_MOVING_ARM*MAX_RANGE_OF_MOVING_ARM:
+            continue
+        elif distance_to_the_fixed_arm < distance_to_the_moving_arm:
+            cubes_assigned_to_fixed_arm.append([convert_pix_to_mm(point[0],fixed_arm_x),convert_pix_to_mm(point[1],fixed_arm_y),point[2]])
+        else:
+            cubes_assigned_to_moving_arm.append([convert_pix_to_mm(point[0],moving_arm_x),convert_pix_to_mm(point[1],moving_arm_y),point[2]])
+    print(cubes_assigned_to_fixed_arm)
+    print(cubes_assigned_to_moving_arm)
+
+    # Serialization
+    numpyData = {"cubes_assigned_to_fixed_arm": convert_array(cubes_assigned_to_fixed_arm), "cubes_assigned_to_moving_arm": convert_array(cubes_assigned_to_moving_arm)}
+    with open("numpyData.json", "w") as write_file:
+        json.dump(numpyData, write_file, cls=NumpyArrayEncoder)
+
+
+# judge whether a point is in or out of specific areas
 def isInterArea(testPoint):#testPoint为待测点[x,y]
+
+    # define the area of the left track
     LBPoint_1 = [corner_left_4_x, corner_left_4_y]
     LTPoint_1 = [corner_left_1_x, corner_left_1_y]
     RTPoint_1 = [corner_left_2_x, corner_left_2_y]
@@ -47,6 +104,7 @@ def isInterArea(testPoint):#testPoint为待测点[x,y]
     d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
     in_area_1 = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
 
+    # define the area of the right track
     LBPoint_2 = [corner_right_4_x, corner_right_4_y]
     LTPoint_2 = [corner_right_1_x, corner_right_1_y]
     RTPoint_2 = [corner_right_2_x, corner_right_2_y]
@@ -55,24 +113,28 @@ def isInterArea(testPoint):#testPoint为待测点[x,y]
     b = (RTPoint_2[0]-LTPoint_2[0])*(testPoint[1]-LTPoint_2[1])-(RTPoint_2[1]-LTPoint_2[1])*(testPoint[0]-LTPoint_2[0])
     c = (RBPoint_2[0]-RTPoint_2[0])*(testPoint[1]-RTPoint_2[1])-(RBPoint_2[1]-RTPoint_2[1])*(testPoint[0]-RTPoint_2[0])
     d = (LBPoint_2[0]-RBPoint_2[0])*(testPoint[1]-RBPoint_2[1])-(LBPoint_2[1]-RBPoint_2[1])*(testPoint[0]-RBPoint_2[0])
-    print(a,b,c,d)
     in_area_2 = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
 
-    if in_area_1 or in_area_2:
+    if in_area_1 or in_area_2: # if the point falls in either the left track or the right track, return True.
         return True
-    else:
+    else: # else, return False.
         return False
 
+# slightly correct the location of the cubes
+def correct_location(point):
+    point[0] = int(point[0] + 0.012*(point[0]-center_x))
+    point[1] = int(point[1] + 0.009*(point[1]-center_y))
+    return point
 
+# get the scrrenshot of the camera
 def get_screenshot():
     pic = ImageGrab.grab()
     pic.save(pic_grab_path)
 
-
-def abc(x):
+# define a keyboard event
+def start_a_session(x):
     b = keyboard.KeyboardEvent('down', 25, 'p')
 
-    
     if x.event_type == 'down' and x.name == b.name:
 
         # get_screenshot()
@@ -82,8 +144,7 @@ def abc(x):
 
         detect()
 
-
-
+# camera calibration using zhang's method
 def undistort(frame):
     fx = 1688.6581
     fy = 1688.8659
@@ -106,8 +167,8 @@ def undistort(frame):
     return cv2.remap(frame, mapx, mapy, cv2.INTER_LINEAR)
 
 def draw_points(image, x, y):
-    image = cv2.line(image,(x+3,y),(x-3,y),(0, 255, 0),10)
-    image = cv2.line(image,(x,y+3),(x,y-3),(0, 255, 0),10)
+    image = cv2.line(image,(x+3,y),(x-3,y),(255, 255, 255),10)
+    image = cv2.line(image,(x,y+3),(x,y-3),(255, 255, 255),10)
 
 def convert_array(point_list):
     points = np.array(point_list)
@@ -117,16 +178,17 @@ def convert_array(point_list):
 
 
 def detect():
+
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     # hsv
     lower_red = np.array([0, 100, 150])       # define lower bound of "red"
     higher_red = np.array([10, 255, 255])    # define higher bound of "red"
-    lower_yellow = np.array([22, 80, 100])   # define lower bound of "yellow"
+    lower_yellow = np.array([22, 80, 150])   # define lower bound of "yellow"
     higher_yellow = np.array([33, 130, 255])  # define higher bound of "yellow"
     lower_blue = np.array([90,80,150])       # define lower bound of "blue"
     higher_blue = np.array([140,240,255])    # define higher bound of "blue"
-    lower_green = np.array([35,43,46])      # define lower bound of "green"
+    lower_green = np.array([35,43,150])      # define lower bound of "green"
     higher_green = np.array([77,255,255])   # define higher bound of "green"
 
 
@@ -164,12 +226,13 @@ def detect():
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 2):#小于2000就跳过
+        if (area < 100):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isInterArea([cx,cy])):
@@ -195,12 +258,13 @@ def detect():
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 2):#小于200就跳过
+        if (area < 100):#小于200就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box) #取整
         cx = int(rect[0][0]) #获取中心点x坐标
         cy = int(rect[0][1])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isInterArea([cx,cy])):
@@ -226,12 +290,13 @@ def detect():
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 0):#小于2000就跳过
+        if (area < 100):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isInterArea([cx,cy])):
@@ -263,12 +328,13 @@ def detect():
         (x, y, w, h) = cv2.boundingRect(cnt)  # 该函数返回矩阵四个点
         rect = cv2.minAreaRect(cnt) # 得到最小外接矩形的（中心(x,y), (宽,高), 旋转角度）
         area = cv2.contourArea(cnt)#获得blob的面积
-        if (area < 0):#小于2000就跳过
+        if (area < 100):#小于2000就跳过
             continue
         box = cv2.boxPoints(rect) #  获取最小外接矩形的4个顶点坐标
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isInterArea([cx,cy])):
@@ -294,14 +360,14 @@ def detect():
 ######################     draw some lines/points to help debug STARTs    #####################
 
     draw_points(image, center_x, center_y)
-    draw_points(image, corner_left_1_x, corner_left_1_y)
-    draw_points(image, corner_left_2_x, corner_left_2_y)
-    draw_points(image, corner_left_3_x, corner_left_3_y)
-    draw_points(image, corner_left_4_x, corner_left_4_y)
-    draw_points(image, corner_right_1_x, corner_right_1_y)
-    draw_points(image, corner_right_2_x, corner_right_2_y)
-    draw_points(image, corner_right_3_x, corner_right_3_y)
-    draw_points(image, corner_right_4_x, corner_right_4_y)
+    # draw_points(image, corner_left_1_x, corner_left_1_y)
+    # draw_points(image, corner_left_2_x, corner_left_2_y)
+    # draw_points(image, corner_left_3_x, corner_left_3_y)
+    # draw_points(image, corner_left_4_x, corner_left_4_y)
+    # draw_points(image, corner_right_1_x, corner_right_1_y)
+    # draw_points(image, corner_right_2_x, corner_right_2_y)
+    # draw_points(image, corner_right_3_x, corner_right_3_y)
+    # draw_points(image, corner_right_4_x, corner_right_4_y)
 
     pts_1 = np.array([[corner_left_4_x, corner_left_4_y],[corner_left_1_x, corner_left_1_y],[corner_left_2_x, corner_left_2_y],[corner_left_3_x, corner_left_3_y]], np.int32)
     pts_1 = pts_1.reshape((-1, 1, 2))
@@ -331,12 +397,13 @@ def detect():
     #     print(x[1])
 
     # print(isInterArea([1700,600]))
-    print(point_array)
+    # print(point_array)
+    assign_arm(point_array)
 
 
 if __name__=="__main__":  
 
-    keyboard.hook(abc)
+    keyboard.hook(start_a_session)
     while True:
         input = keyboard.read_key()
         if input=='q':
