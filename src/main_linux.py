@@ -1,6 +1,6 @@
-from pickle import TRUE
-from re import X
-import cv2
+# from pickle import TRUE
+# from re import X
+
 import numpy as np
 from json import JSONEncoder
 import json
@@ -9,10 +9,11 @@ import json
 import pyscreenshot as ImageGrab
 import sys
 import keyboard
+import cv2
 
-pic_grab_path = "/home/jelly/Desktop/Monitor/pic.png"
-pic_undistorted_path = "/home/jelly/Desktop/Monitor/img_undistorted.png"
-pic_detected_path = "/home/jelly/Desktop/Monitor/image_detection.png"
+pic_grab_path = "./pic.png"
+pic_undistorted_path = "./img_undistorted.png"
+pic_detected_path = "./image_detection.png"
 keyboard_flag = 0
 
 # logic center of the camera (be used for point correction)
@@ -87,7 +88,7 @@ def assign_arm(point_array):
     # Serialization
     numpyData = {"cubes_assigned_to_fixed_arm": convert_array(cubes_assigned_to_fixed_arm), "cubes_assigned_to_moving_arm": convert_array(cubes_assigned_to_moving_arm)}
     with open("numpyData.json", "w") as write_file:
-        json.dump(numpyData, write_file, cls=NumpyArrayEncoder)
+        json.dump(numpyData, write_file, cls=NumpyArrayEncoder, indent=2)
 
 
 # judge whether a point is in or out of specific areas
