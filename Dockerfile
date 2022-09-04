@@ -1,12 +1,10 @@
 FROM python:3.10
 
-WORKDIR /home/jelly/Desktop/Monitor
+WORKDIR ./Desktop/Monitor
 
 ADD . .
 
 RUN pip install --upgrade pip
-
-RUN apt-get install -y kmod kbd
 
 RUN pip install -r requirements.txt
 

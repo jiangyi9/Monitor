@@ -29,8 +29,8 @@ moving_arm_x = 992
 moving_arm_y = 157
 
 # define the height of the desk (LOW) and the track (HIGH)
-LOW = 0
-HIGH = 1
+LOW = 25
+HIGH = 105
 
 # define the maximum range of arms
 MAX_RANGE_OF_FIXED_ARM = 512
@@ -55,6 +55,36 @@ corner_right_3_x = 1627
 corner_right_3_y = 943
 corner_right_4_x = 1477
 corner_right_4_y = 880
+
+# upper area of the left track
+upper_left_1_x = 167
+upper_left_1_y = 141
+upper_left_2_x = 296
+upper_left_2_y = 55
+upper_left_3_x = 316
+upper_left_3_y = 80
+upper_left_4_x = 187
+upper_left_4_y = 166
+
+# upper area of the right track
+upper_right_1_x = 1770
+upper_right_1_y = 127
+upper_right_2_x = 1920
+upper_right_2_y = 196
+upper_right_3_x = 1910
+upper_right_3_y = 226
+upper_right_4_x = 1760
+upper_right_4_y = 157
+
+# # tape A
+# tape_A_1_x = 188
+# tape_A_1_y = 260
+# tape_A_2_x = 240
+# tape_A_2_y = 260
+# tape_A_3_x = 260
+# tape_A_3_y = 300
+# tape_A_4_x = 212
+# tape_A_4_y = 315
 
 # define two lists to store cubes assigned to two arms, respectively.
 cubes_assigned_to_fixed_arm = []
@@ -91,10 +121,10 @@ def assign_arm(point_array):
         json.dump(numpyData, write_file, cls=NumpyArrayEncoder, indent=2)
 
 
-# judge whether a point is in or out of specific areas
-def isInterArea(testPoint):#testPoint为待测点[x,y]
+# judge whether a point is in or out of the track
+def isOnTrack(testPoint):#testPoint为待测点[x,y]
 
-    # define the area of the left track
+    # define area 1 as the left track (pink)
     LBPoint_1 = [corner_left_4_x, corner_left_4_y]
     LTPoint_1 = [corner_left_1_x, corner_left_1_y]
     RTPoint_1 = [corner_left_2_x, corner_left_2_y]
@@ -105,7 +135,7 @@ def isInterArea(testPoint):#testPoint为待测点[x,y]
     d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
     in_area_1 = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
 
-    # define the area of the right track
+    # define area 2 as the right track (pink)
     LBPoint_2 = [corner_right_4_x, corner_right_4_y]
     LTPoint_2 = [corner_right_1_x, corner_right_1_y]
     RTPoint_2 = [corner_right_2_x, corner_right_2_y]
@@ -121,10 +151,53 @@ def isInterArea(testPoint):#testPoint为待测点[x,y]
     else: # else, return False.
         return False
 
+def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
+
+    # define area 1 as the left track (pink)
+    LBPoint_1 = [upper_left_4_x, upper_left_4_y]
+    LTPoint_1 = [upper_left_1_x, upper_left_1_y]
+    RTPoint_1 = [upper_left_2_x, upper_left_2_y]
+    RBPoint_1 = [upper_left_3_x, upper_left_3_y]
+    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
+    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
+    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
+    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
+    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
+
+    if in_area: 
+        return True
+    else: 
+        return False
+
+def isAtUpperRight(testPoint):#testPoint为待测点[x,y]
+
+    # define area 1 as the left track (pink)
+    LBPoint_1 = [upper_right_4_x, upper_right_4_y]
+    LTPoint_1 = [upper_right_1_x, upper_right_1_y]
+    RTPoint_1 = [upper_right_2_x, upper_right_2_y]
+    RBPoint_1 = [upper_right_3_x, upper_right_3_y]
+    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
+    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
+    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
+    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
+    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
+
+    if in_area: 
+        return True
+    else: 
+        return False
+
 # slightly correct the location of the cubes
 def correct_location(point):
-    point[0] = int(point[0] + 0.012*(point[0]-center_x))
-    point[1] = int(point[1] + 0.009*(point[1]-center_y))
+    if isAtUpperLeft(point):
+        point[0] = int(point[0] + 0.003*(point[0]-center_x))
+        point[1] = int(point[1] - 0.003*(point[1]-center_y))
+    elif isAtUpperRight(point):
+        point[0] = int(point[0] - 0.003*(point[0]-center_x))
+        point[1] = int(point[1] - 0.003*(point[1]-center_y))
+    else:
+        point[0] = int(point[0] + 0.012*(point[0]-center_x))
+        point[1] = int(point[1] + 0.009*(point[1]-center_y))
     return point
 
 # get the scrrenshot of the camera
@@ -236,13 +309,13 @@ def detect():
         [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         red_point_list.append(cx)
         red_point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             red_point_list.append(HIGH)
         else:
             red_point_list.append(LOW)
@@ -268,13 +341,13 @@ def detect():
         [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         blue_point_list.append(cx)
         blue_point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             blue_point_list.append(HIGH)
         else:
             blue_point_list.append(LOW)
@@ -300,13 +373,13 @@ def detect():
         [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         yellow_point_list.append(cx)
         yellow_point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             yellow_point_list.append(HIGH)
         else:
             yellow_point_list.append(LOW)
@@ -338,13 +411,13 @@ def detect():
         [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         green_point_list.append(cx)
         green_point_list.append(cy)
-        if(isInterArea([cx,cy])):
+        if(isOnTrack([cx,cy])):
             green_point_list.append(HIGH)
         else:
             green_point_list.append(LOW)
@@ -370,15 +443,34 @@ def detect():
     # draw_points(image, corner_right_3_x, corner_right_3_y)
     # draw_points(image, corner_right_4_x, corner_right_4_y)
 
+    # draw the mask of the left track
     pts_1 = np.array([[corner_left_4_x, corner_left_4_y],[corner_left_1_x, corner_left_1_y],[corner_left_2_x, corner_left_2_y],[corner_left_3_x, corner_left_3_y]], np.int32)
     pts_1 = pts_1.reshape((-1, 1, 2))
     zeros = np.zeros((image.shape), dtype=np.uint8)
     mask_1 = cv2.fillConvexPoly(zeros, pts_1, (255,0,255))
 
+    # draw the mask of the right track
     pts_2 = np.array([[corner_right_4_x, corner_right_4_y],[corner_right_1_x, corner_right_1_y],[corner_right_2_x, corner_right_2_y],[corner_right_3_x, corner_right_3_y]], np.int32)
     pts_2 = pts_2.reshape((-1, 1, 2))
     mask_2 = cv2.fillConvexPoly(zeros, pts_2, (255,0,255))
-    image = 0.3*mask_1 + 0.3*mask_2 + image
+    image = 0.3*mask_1 + 0.3*mask_2 + + image
+
+    # draw the mask of the right track
+    pts_3 = np.array([[upper_left_4_x, upper_left_4_y],[upper_left_1_x, upper_left_1_y],[upper_left_2_x, upper_left_2_y],[upper_left_3_x, upper_left_3_y]], np.int32)
+    pts_3 = pts_3.reshape((-1, 1, 2))
+    mask_3 = cv2.fillConvexPoly(zeros, pts_3, (255,255,255))
+
+    # draw the mask of the right track
+    pts_4 = np.array([[upper_right_4_x, upper_right_4_y],[upper_right_1_x, upper_right_1_y],[upper_right_2_x, upper_right_2_y],[upper_right_3_x, upper_right_3_y]], np.int32)
+    pts_4 = pts_4.reshape((-1, 1, 2))
+    mask_4 = cv2.fillConvexPoly(zeros, pts_4, (255,255,255))
+    image = 0.3*mask_1 + 0.3*mask_2 + 0.05*mask_3 + 0.05*mask_4 + image
+
+    # # draw the mask of tape A
+    # pts_3 = np.array([[tape_A_4_x, tape_A_4_y],[tape_A_1_x, tape_A_1_y],[tape_A_2_x, tape_A_2_y],[tape_A_3_x, tape_A_3_y]], np.int32)
+    # pts_3 = pts_3.reshape((-1, 1, 2))
+    # mask_3 = cv2.fillConvexPoly(zeros, pts_3, (255,255,255))
+
    
     cv2.imwrite(pic_detected_path, image)
 
@@ -393,11 +485,13 @@ def detect():
     yellow_point_array = convert_array(yellow_point_list)
     green_point_array = convert_array(green_point_list)
 
+    print(point_array)
+
     # print(green_point_array)
     # for x in green_point_array:
     #     print(x[1])
 
-    # print(isInterArea([1700,600]))
+    # print(isOnTrack([1700,600]))
     # print(point_array)
     assign_arm(point_array)
 
@@ -409,3 +503,11 @@ if __name__=="__main__":
         input = keyboard.read_key()
         if input=='q':
             break
+
+    # get_screenshot()
+
+    # frame = cv2.imread(pic_grab_path)
+    # cv2.imwrite(pic_undistorted_path, undistort(frame))
+
+    # detect()
+    # print("demo runs successfully")

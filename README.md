@@ -157,20 +157,32 @@ for cnt in cnts1: #red (BGR color space here)
 
 
 
-1. Do I need to <font color='red'>track</font> objects by ID (i.e. when a new cubes appears in the webcam, we should give it a unique ID. The system should track each cube by ID. In this case, we see each cube as an OBJECT, with attributes like ID, color, location, etc.. The cube ID will not change only if the cube leaves the screen and then re-enter the screen) ? 
 
-   Or simply <font color='red'>detect</font> objects by color and location (in each time point, the system only needs to know e.g. there are 2 blue cubes at points (120, 400) and (300, 50), and a red cube at point(200, 200). The system doesn't care about the exact IDENTITY of cube) ?
 
-   A: the second one (simply detect)
 
-2. Will the webcam always places right above the cubes (i.e. the webcam can only see the upper side of cubes, so this is a <font color='red'>2D dection task</font>)?
 
-   Or this is a <font color='red'>3D dection task</font>? (approx. 2d)
+#### What I have done
 
-3. <font color='red'>How frequent</font> the cube location information should be updated and transmitted? Frame by frame? Or per second? (the time that I enter the button, it's only one frame)
+1. Defined the area of tracks, add the "height" attribute based on the location of the track.
+2. Correct the location information of cubes (especially cubes that are partly covered by the track, and cubes that are far away from the center.)
+3. Decide which of the two arms should be assigned for each cubes. (It's possible that neither arm is assigned, because the cubes are too far.)
+4. Export the relative x-y-z location information of cubes for 2 arms (in mm) as JSON file.
+5. Users can simply use the keyboard to control the program (need root permission).
+6. Tried to build the program as a Docker image, but meet (at least 2) issues that are very difficult to solve.
 
-4. Do you have the RTSP / HTTP / WSS address of the camera? (maybe yes)
 
-5. About the upper-left cubes, do I need to detect them? Or can I remove them from the webcam? (we don't consider these cubes)
 
-6. About Web of Things: Is there any tutorials that can tell me how to export location data into the Web of Things system?
+Questions for the next step:
+
+1. About deployment: Can I write a shell to help users automatically install dependencies, instead of using Docker?
+
+
+
+
+
+
+
+
+
+
+
