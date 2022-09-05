@@ -172,9 +172,14 @@ for cnt in cnts1: #red (BGR color space here)
 
 
 
-Questions for the next step:
+#### Questions for the next step:
 
-1. About deployment: Can I write a shell to help users automatically install dependencies, instead of using Docker?
+1. About deployment: use shell? use virtual environment?
+1. Do I need to control the arm? How does the arm move?
+1. create a new JSON? Or add the data to an existing JSON?
+1. removing tapes
+1. Identify the arm (stick something)
+1. Maybe I can also start writing the report.
 
 
 
