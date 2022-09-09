@@ -3,11 +3,11 @@ import points as pts
 
 def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
 
-    # define area 1 as the left track (pink)
-    LBPoint_1 = [pts.upper_left_4_x, pts.upper_left_4_y]
-    LTPoint_1 = [pts.upper_left_1_x, pts.upper_left_1_y]
-    RTPoint_1 = [pts.upper_left_2_x, pts.upper_left_2_y]
-    RBPoint_1 = [pts.upper_left_3_x, pts.upper_left_3_y]
+    # define area 1 as the left track (white)
+    LBPoint_1 = [pts.left_track_upper_LB_x, pts.left_track_upper_LB_y]
+    LTPoint_1 = [pts.left_track_upper_LT_x, pts.left_track_upper_LT_y]
+    RTPoint_1 = [pts.left_track_upper_RT_x, pts.left_track_upper_RT_y]
+    RBPoint_1 = [pts.left_track_upper_RB_x, pts.left_track_upper_RB_y]
     a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
     b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
     c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
@@ -22,11 +22,11 @@ def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
 
 def isAtUpperRight(testPoint):#testPoint为待测点[x,y]
 
-    # define area 1 as the left track (pink)
-    LBPoint_1 = [pts.upper_right_4_x, pts.upper_right_4_y]
-    LTPoint_1 = [pts.upper_right_1_x, pts.upper_right_1_y]
-    RTPoint_1 = [pts.upper_right_2_x, pts.upper_right_2_y]
-    RBPoint_1 = [pts.upper_right_3_x, pts.upper_right_3_y]
+    # define area 2 as the left track (white)
+    LBPoint_1 = [pts.right_track_upper_LB_x, pts.right_track_upper_LB_y]
+    LTPoint_1 = [pts.right_track_upper_LT_x, pts.right_track_upper_LT_y]
+    RTPoint_1 = [pts.right_track_upper_RT_x, pts.right_track_upper_RT_y]
+    RBPoint_1 = [pts.right_track_upper_RB_x, pts.right_track_upper_RB_y]
     a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
     b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
     c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])

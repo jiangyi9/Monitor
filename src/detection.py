@@ -177,14 +177,14 @@ def detect(image):
 ######################     draw some lines/points to help debug STARTs    #####################
 
     drawing.draw_points(image, pts.center_x, pts.center_y)
-    # drawing.draw_points(image, pts.corner_left_1_x, pts.corner_left_1_y)
-    # drawing.draw_points(image, pts.corner_left_2_x, pts.corner_left_2_y)
-    # drawing.draw_points(image, pts.corner_left_3_x, pts.corner_left_3_y)
-    # drawing.draw_points(image, pts.corner_left_4_x, pts.corner_left_4_y)
-    # drawing.draw_points(image, pts.corner_right_1_x, pts.corner_right_1_y)
-    # drawing.draw_points(image, pts.corner_right_2_x, pts.corner_right_2_y)
-    # drawing.draw_points(image, pts.corner_right_3_x, pts.corner_right_3_y)
-    # drawing.draw_points(image, pts.corner_right_4_x, pts.corner_right_4_y)
+    # drawing.draw_points(image, pts.left_track_LB_x, pts.left_track_LB_y)
+    # drawing.draw_points(image, pts.left_track_LT_x, pts.left_track_LT_y)
+    # drawing.draw_points(image, pts.left_track_RT_x, pts.left_track_RT_y)
+    # drawing.draw_points(image, pts.left_track_RB_x, pts.left_track_RB_y)
+    # drawing.draw_points(image, pts.right_track_LB_x, pts.right_track_LB_y)
+    # drawing.draw_points(image, pts.right_track_LT_x, pts.right_track_LT_y)
+    # drawing.draw_points(image, pts.right_track_RT_x, pts.right_track_RT_y)
+    # drawing.draw_points(image, pts.right_track_RB_x, pts.right_track_RB_y)
 
     image = drawing.draw_masks(image)
 

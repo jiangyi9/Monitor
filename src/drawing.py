@@ -8,24 +8,36 @@ def draw_points(image, x, y):
 
 def draw_masks(image):
     # draw the mask of the left track
-    pts_1 = np.array([[pts.corner_left_4_x, pts.corner_left_4_y],[pts.corner_left_1_x, pts.corner_left_1_y],[pts.corner_left_2_x, pts.corner_left_2_y],[pts.corner_left_3_x, pts.corner_left_3_y]], np.int32)
+    pts_1 = np.array([[pts.left_track_LB_x, pts.left_track_LB_y],
+                        [pts.left_track_LT_x, pts.left_track_LT_y],
+                        [pts.left_track_RT_x, pts.left_track_RT_y],
+                        [pts.left_track_RB_x, pts.left_track_RB_y]], np.int32)
     pts_1 = pts_1.reshape((-1, 1, 2))
     zeros = np.zeros((image.shape), dtype=np.uint8)
     mask_1 = cv2.fillConvexPoly(zeros, pts_1, (255,0,255))
 
     # draw the mask of the right track
-    pts_2 = np.array([[pts.corner_right_4_x, pts.corner_right_4_y],[pts.corner_right_1_x, pts.corner_right_1_y],[pts.corner_right_2_x, pts.corner_right_2_y],[pts.corner_right_3_x, pts.corner_right_3_y]], np.int32)
+    pts_2 = np.array([[pts.right_track_LB_x, pts.right_track_LB_y],
+                        [pts.right_track_LT_x, pts.right_track_LT_y],
+                        [pts.right_track_RT_x, pts.right_track_RT_y],
+                        [pts.right_track_RB_x, pts.right_track_RB_y]], np.int32)
     pts_2 = pts_2.reshape((-1, 1, 2))
     mask_2 = cv2.fillConvexPoly(zeros, pts_2, (255,0,255))
     image = 0.3*mask_1 + 0.3*mask_2 + + image
 
     # draw the mask of the right track
-    pts_3 = np.array([[pts.upper_left_4_x, pts.upper_left_4_y],[pts.upper_left_1_x, pts.upper_left_1_y],[pts.upper_left_2_x, pts.upper_left_2_y],[pts.upper_left_3_x, pts.upper_left_3_y]], np.int32)
+    pts_3 = np.array([[pts.left_track_upper_LB_x, pts.left_track_upper_LB_y],
+                        [pts.left_track_upper_LT_x, pts.left_track_upper_LT_y],
+                        [pts.left_track_upper_RT_x, pts.left_track_upper_RT_y],
+                        [pts.left_track_upper_RB_x, pts.left_track_upper_RB_y]], np.int32)
     pts_3 = pts_3.reshape((-1, 1, 2))
     mask_3 = cv2.fillConvexPoly(zeros, pts_3, (255,255,255))
 
     # draw the mask of the right track
-    pts_4 = np.array([[pts.upper_right_4_x, pts.upper_right_4_y],[pts.upper_right_1_x, pts.upper_right_1_y],[pts.upper_right_2_x, pts.upper_right_2_y],[pts.upper_right_3_x, pts.upper_right_3_y]], np.int32)
+    pts_4 = np.array([[pts.right_track_upper_LB_x, pts.right_track_upper_LB_y],
+                        [pts.right_track_upper_LT_x, pts.right_track_upper_LT_y],
+                        [pts.right_track_upper_RT_x, pts.right_track_upper_RT_y],
+                        [pts.right_track_upper_RB_x, pts.right_track_upper_RB_y]], np.int32)
     pts_4 = pts_4.reshape((-1, 1, 2))
     mask_4 = cv2.fillConvexPoly(zeros, pts_4, (255,255,255))
 

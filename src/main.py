@@ -7,14 +7,8 @@ pic_grab_path = "./pic.png"
 pic_undistorted_path = "./img_undistorted.png"
 pic_detected_path = "./image_detection.png"
 
-# # get the scrrenshot of the camera
-# def get_screenshot():
-#     pic = ImageGrab.grab()
-#     pic.save(pic_grab_path)
 
 if __name__=="__main__":  
-
-    # get_screenshot()
 
     time.sleep(1)
 

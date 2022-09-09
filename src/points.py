@@ -14,44 +14,44 @@ moving_arm_x = 992
 moving_arm_y = 157
 
 # the corner points of the left tracker
-corner_left_1_x = 187
-corner_left_1_y = 166
-corner_left_2_x = 316
-corner_left_2_y = 80
-corner_left_3_x = 954
-corner_left_3_y = 928
-corner_left_4_x = 815
-corner_left_4_y = 1028
+left_track_LB_x = 819
+left_track_LB_y = 1035
+left_track_LT_x = 187
+left_track_LT_y = 166
+left_track_RT_x = 316
+left_track_RT_y = 80
+left_track_RB_x = 955
+left_track_RB_y = 928
 
 # the corner points of the right tracker
-corner_right_1_x = 1760
-corner_right_1_y = 157
-corner_right_2_x = 1910
-corner_right_2_y = 226
-corner_right_3_x = 1627
-corner_right_3_y = 943
-corner_right_4_x = 1477
-corner_right_4_y = 880
+right_track_LB_x = 1477
+right_track_LB_y = 880
+right_track_LT_x = 1760
+right_track_LT_y = 157
+right_track_RT_x = 1910
+right_track_RT_y = 226
+right_track_RB_x = 1627
+right_track_RB_y = 943
 
 # upper area of the left track
-upper_left_1_x = 167
-upper_left_1_y = 141
-upper_left_2_x = 296
-upper_left_2_y = 55
-upper_left_3_x = 316
-upper_left_3_y = 80
-upper_left_4_x = 187
-upper_left_4_y = 166
+left_track_upper_LT_x = 167
+left_track_upper_LT_y = 141
+left_track_upper_RT_x = 296
+left_track_upper_RT_y = 55
+left_track_upper_RB_x = 316
+left_track_upper_RB_y = 80
+left_track_upper_LB_x = 187
+left_track_upper_LB_y = 166
 
 # upper area of the right track
-upper_right_1_x = 1770
-upper_right_1_y = 127
-upper_right_2_x = 1920
-upper_right_2_y = 196
-upper_right_3_x = 1910
-upper_right_3_y = 226
-upper_right_4_x = 1760
-upper_right_4_y = 157
+right_track_upper_LT_x = 1770
+right_track_upper_LT_y = 127
+right_track_upper_RT_x = 1920
+right_track_upper_RT_y = 196
+right_track_upper_RB_x = 1910
+right_track_upper_RB_y = 226
+right_track_upper_LB_x = 1760
+right_track_upper_LB_y = 157
 
 # tape A
 tape_A_1_x = 188
