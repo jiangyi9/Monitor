@@ -1,6 +1,6 @@
 FROM python:3.10
 
-WORKDIR ./Desktop/Monitor
+WORKDIR /home/jelly/Desktop/Monitor
 
 ADD . .
 

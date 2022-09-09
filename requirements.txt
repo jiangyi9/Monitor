@@ -1,5 +1,2 @@
 opencv-python-headless
 numpy
-Pillow
-pyscreenshot
-keyboard

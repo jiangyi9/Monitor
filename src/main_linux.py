@@ -1,14 +1,16 @@
 # from pickle import TRUE
 # from re import X
 
+from time import time
 import numpy as np
 from json import JSONEncoder
 import json
+import os
 
 # from PIL import ImageGrab
-import pyscreenshot as ImageGrab
-import sys
-import keyboard
+# import pyscreenshot as ImageGrab
+# import sys
+import time
 import cv2
 
 pic_grab_path = "./pic.png"
@@ -200,23 +202,23 @@ def correct_location(point):
         point[1] = int(point[1] + 0.009*(point[1]-center_y))
     return point
 
-# get the scrrenshot of the camera
-def get_screenshot():
-    pic = ImageGrab.grab()
-    pic.save(pic_grab_path)
+# # get the scrrenshot of the camera
+# def get_screenshot():
+#     pic = ImageGrab.grab()
+#     pic.save(pic_grab_path)
 
-# define a keyboard event
-def start_a_session(x):
-    b = keyboard.KeyboardEvent('down', 25, 'p')
+# # define a keyboard event
+# def start_a_session(x):
+#     b = keyboard.KeyboardEvent('down', 25, 'p')
 
-    if x.event_type == 'down' and x.name == b.name:
+#     if x.event_type == 'down' and x.name == b.name:
 
-        # get_screenshot()
+#         # get_screenshot()
 
-        frame = cv2.imread(pic_grab_path)
-        cv2.imwrite(pic_undistorted_path, undistort(frame))
+#         frame = cv2.imread(pic_grab_path)
+#         cv2.imwrite(pic_undistorted_path, undistort(frame))
 
-        detect()
+#         detect()
 
 # camera calibration using zhang's method
 def undistort(frame):
@@ -498,16 +500,15 @@ def detect():
 
 if __name__=="__main__":  
 
-    keyboard.hook(start_a_session)
-    while True:
-        input = keyboard.read_key()
-        if input=='q':
-            break
-
     # get_screenshot()
 
-    # frame = cv2.imread(pic_grab_path)
-    # cv2.imwrite(pic_undistorted_path, undistort(frame))
+    time.sleep(1)
 
-    # detect()
-    # print("demo runs successfully")
+    frame = cv2.imread(pic_grab_path)
+    cv2.imwrite(pic_undistorted_path, undistort(frame))
+
+    detect()
+
+    print("demo runs successfully")
+
+    time.sleep(1)
