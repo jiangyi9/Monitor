@@ -1,4 +1,4 @@
-import Points as pts
+import points as pts
 
 
 def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
