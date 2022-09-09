@@ -6,6 +6,8 @@ import numpy as np
 from json import JSONEncoder
 import json
 import os
+import Points as pts
+import cubeCorrection as cube_correction
 
 # from PIL import ImageGrab
 # import pyscreenshot as ImageGrab
@@ -18,18 +20,6 @@ pic_undistorted_path = "./img_undistorted.png"
 pic_detected_path = "./image_detection.png"
 keyboard_flag = 0
 
-# logic center of the camera (be used for point correction)
-center_x = 880
-center_y = 700
-
-# the place of the fixed arm
-fixed_arm_x = 1207
-fixed_arm_y = 763
-
-# the place of the moving arm
-moving_arm_x = 992
-moving_arm_y = 157
-
 # define the height of the desk (LOW) and the track (HIGH)
 LOW = 25
 HIGH = 105
@@ -37,56 +27,6 @@ HIGH = 105
 # define the maximum range of arms
 MAX_RANGE_OF_FIXED_ARM = 512
 MAX_RANGE_OF_MOVING_ARM = 512
-
-# the corner points of the left tracker
-corner_left_1_x = 187
-corner_left_1_y = 166
-corner_left_2_x = 316
-corner_left_2_y = 80
-corner_left_3_x = 954
-corner_left_3_y = 928
-corner_left_4_x = 815
-corner_left_4_y = 1028
-
-# the corner points of the right tracker
-corner_right_1_x = 1760
-corner_right_1_y = 157
-corner_right_2_x = 1910
-corner_right_2_y = 226
-corner_right_3_x = 1627
-corner_right_3_y = 943
-corner_right_4_x = 1477
-corner_right_4_y = 880
-
-# upper area of the left track
-upper_left_1_x = 167
-upper_left_1_y = 141
-upper_left_2_x = 296
-upper_left_2_y = 55
-upper_left_3_x = 316
-upper_left_3_y = 80
-upper_left_4_x = 187
-upper_left_4_y = 166
-
-# upper area of the right track
-upper_right_1_x = 1770
-upper_right_1_y = 127
-upper_right_2_x = 1920
-upper_right_2_y = 196
-upper_right_3_x = 1910
-upper_right_3_y = 226
-upper_right_4_x = 1760
-upper_right_4_y = 157
-
-# # tape A
-# tape_A_1_x = 188
-# tape_A_1_y = 260
-# tape_A_2_x = 240
-# tape_A_2_y = 260
-# tape_A_3_x = 260
-# tape_A_3_y = 300
-# tape_A_4_x = 212
-# tape_A_4_y = 315
 
 # define two lists to store cubes assigned to two arms, respectively.
 cubes_assigned_to_fixed_arm = []
@@ -106,14 +46,14 @@ def convert_pix_to_mm(number, arm):
 # assign cubes to the closest arm
 def assign_arm(point_array):
     for point in point_array:
-        distance_to_the_fixed_arm = (point[0]-fixed_arm_x)*(point[0]-fixed_arm_x) + (point[1]-fixed_arm_y)*(point[1]-fixed_arm_y)
-        distance_to_the_moving_arm = (point[0]-moving_arm_x)*(point[0]-moving_arm_x) + (point[1]-moving_arm_y)*(point[1]-moving_arm_y)
+        distance_to_the_fixed_arm = (point[0]-pts.fixed_arm_x)*(point[0]-pts.fixed_arm_x) + (point[1]-pts.fixed_arm_y)*(point[1]-pts.fixed_arm_y)
+        distance_to_the_moving_arm = (point[0]-pts.moving_arm_x)*(point[0]-pts.moving_arm_x) + (point[1]-pts.moving_arm_y)*(point[1]-pts.moving_arm_y)
         if distance_to_the_fixed_arm > MAX_RANGE_OF_FIXED_ARM*MAX_RANGE_OF_FIXED_ARM and distance_to_the_moving_arm > MAX_RANGE_OF_MOVING_ARM*MAX_RANGE_OF_MOVING_ARM:
             continue
         elif distance_to_the_fixed_arm < distance_to_the_moving_arm:
-            cubes_assigned_to_fixed_arm.append([convert_pix_to_mm(point[0],fixed_arm_x),convert_pix_to_mm(point[1],fixed_arm_y),point[2]])
+            cubes_assigned_to_fixed_arm.append([convert_pix_to_mm(point[0],pts.fixed_arm_x),convert_pix_to_mm(point[1],pts.fixed_arm_y),point[2]])
         else:
-            cubes_assigned_to_moving_arm.append([convert_pix_to_mm(point[0],moving_arm_x),convert_pix_to_mm(point[1],moving_arm_y),point[2]])
+            cubes_assigned_to_moving_arm.append([convert_pix_to_mm(point[0],pts.moving_arm_x),convert_pix_to_mm(point[1],pts.moving_arm_y),point[2]])
     print(cubes_assigned_to_fixed_arm)
     print(cubes_assigned_to_moving_arm)
 
@@ -127,10 +67,10 @@ def assign_arm(point_array):
 def isOnTrack(testPoint):#testPoint为待测点[x,y]
 
     # define area 1 as the left track (pink)
-    LBPoint_1 = [corner_left_4_x, corner_left_4_y]
-    LTPoint_1 = [corner_left_1_x, corner_left_1_y]
-    RTPoint_1 = [corner_left_2_x, corner_left_2_y]
-    RBPoint_1 = [corner_left_3_x, corner_left_3_y]
+    LBPoint_1 = [pts.corner_left_4_x, pts.corner_left_4_y]
+    LTPoint_1 = [pts.corner_left_1_x, pts.corner_left_1_y]
+    RTPoint_1 = [pts.corner_left_2_x, pts.corner_left_2_y]
+    RBPoint_1 = [pts.corner_left_3_x, pts.corner_left_3_y]
     a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
     b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
     c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
@@ -138,10 +78,10 @@ def isOnTrack(testPoint):#testPoint为待测点[x,y]
     in_area_1 = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
 
     # define area 2 as the right track (pink)
-    LBPoint_2 = [corner_right_4_x, corner_right_4_y]
-    LTPoint_2 = [corner_right_1_x, corner_right_1_y]
-    RTPoint_2 = [corner_right_2_x, corner_right_2_y]
-    RBPoint_2 = [corner_right_3_x, corner_right_3_y]
+    LBPoint_2 = [pts.corner_right_4_x, pts.corner_right_4_y]
+    LTPoint_2 = [pts.corner_right_1_x, pts.corner_right_1_y]
+    RTPoint_2 = [pts.corner_right_2_x, pts.corner_right_2_y]
+    RBPoint_2 = [pts.corner_right_3_x, pts.corner_right_3_y]
     a = (LTPoint_2[0]-LBPoint_2[0])*(testPoint[1]-LBPoint_2[1])-(LTPoint_2[1]-LBPoint_2[1])*(testPoint[0]-LBPoint_2[0])
     b = (RTPoint_2[0]-LTPoint_2[0])*(testPoint[1]-LTPoint_2[1])-(RTPoint_2[1]-LTPoint_2[1])*(testPoint[0]-LTPoint_2[0])
     c = (RBPoint_2[0]-RTPoint_2[0])*(testPoint[1]-RTPoint_2[1])-(RBPoint_2[1]-RTPoint_2[1])*(testPoint[0]-RTPoint_2[0])
@@ -152,55 +92,6 @@ def isOnTrack(testPoint):#testPoint为待测点[x,y]
         return True
     else: # else, return False.
         return False
-
-def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
-
-    # define area 1 as the left track (pink)
-    LBPoint_1 = [upper_left_4_x, upper_left_4_y]
-    LTPoint_1 = [upper_left_1_x, upper_left_1_y]
-    RTPoint_1 = [upper_left_2_x, upper_left_2_y]
-    RBPoint_1 = [upper_left_3_x, upper_left_3_y]
-    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
-    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
-    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
-    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
-    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
-
-    if in_area: 
-        return True
-    else: 
-        return False
-
-def isAtUpperRight(testPoint):#testPoint为待测点[x,y]
-
-    # define area 1 as the left track (pink)
-    LBPoint_1 = [upper_right_4_x, upper_right_4_y]
-    LTPoint_1 = [upper_right_1_x, upper_right_1_y]
-    RTPoint_1 = [upper_right_2_x, upper_right_2_y]
-    RBPoint_1 = [upper_right_3_x, upper_right_3_y]
-    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
-    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
-    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
-    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
-    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
-
-    if in_area: 
-        return True
-    else: 
-        return False
-
-# slightly correct the location of the cubes
-def correct_location(point):
-    if isAtUpperLeft(point):
-        point[0] = int(point[0] + 0.003*(point[0]-center_x))
-        point[1] = int(point[1] - 0.003*(point[1]-center_y))
-    elif isAtUpperRight(point):
-        point[0] = int(point[0] - 0.003*(point[0]-center_x))
-        point[1] = int(point[1] - 0.003*(point[1]-center_y))
-    else:
-        point[0] = int(point[0] + 0.012*(point[0]-center_x))
-        point[1] = int(point[1] + 0.009*(point[1]-center_y))
-    return point
 
 # # get the scrrenshot of the camera
 # def get_screenshot():
@@ -308,7 +199,7 @@ def detect():
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = correct_location([cx,cy])
+        [cx,cy] = cube_correction.correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -340,7 +231,7 @@ def detect():
         box = np.int0(box) #取整
         cx = int(rect[0][0]) #获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = correct_location([cx,cy])
+        [cx,cy] = cube_correction.correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -372,7 +263,7 @@ def detect():
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = correct_location([cx,cy])
+        [cx,cy] = cube_correction.correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -410,7 +301,7 @@ def detect():
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = correct_location([cx,cy])
+        [cx,cy] = cube_correction.correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -435,41 +326,41 @@ def detect():
 
 ######################     draw some lines/points to help debug STARTs    #####################
 
-    draw_points(image, center_x, center_y)
-    # draw_points(image, corner_left_1_x, corner_left_1_y)
-    # draw_points(image, corner_left_2_x, corner_left_2_y)
-    # draw_points(image, corner_left_3_x, corner_left_3_y)
-    # draw_points(image, corner_left_4_x, corner_left_4_y)
-    # draw_points(image, corner_right_1_x, corner_right_1_y)
-    # draw_points(image, corner_right_2_x, corner_right_2_y)
-    # draw_points(image, corner_right_3_x, corner_right_3_y)
-    # draw_points(image, corner_right_4_x, corner_right_4_y)
+    draw_points(image, pts.center_x, pts.center_y)
+    # draw_points(image, pts.corner_left_1_x, pts.corner_left_1_y)
+    # draw_points(image, pts.corner_left_2_x, pts.corner_left_2_y)
+    # draw_points(image, pts.corner_left_3_x, pts.corner_left_3_y)
+    # draw_points(image, pts.corner_left_4_x, pts.corner_left_4_y)
+    # draw_points(image, pts.corner_right_1_x, pts.corner_right_1_y)
+    # draw_points(image, pts.corner_right_2_x, pts.corner_right_2_y)
+    # draw_points(image, pts.corner_right_3_x, pts.corner_right_3_y)
+    # draw_points(image, pts.corner_right_4_x, pts.corner_right_4_y)
 
     # draw the mask of the left track
-    pts_1 = np.array([[corner_left_4_x, corner_left_4_y],[corner_left_1_x, corner_left_1_y],[corner_left_2_x, corner_left_2_y],[corner_left_3_x, corner_left_3_y]], np.int32)
+    pts_1 = np.array([[pts.corner_left_4_x, pts.corner_left_4_y],[pts.corner_left_1_x, pts.corner_left_1_y],[pts.corner_left_2_x, pts.corner_left_2_y],[pts.corner_left_3_x, pts.corner_left_3_y]], np.int32)
     pts_1 = pts_1.reshape((-1, 1, 2))
     zeros = np.zeros((image.shape), dtype=np.uint8)
     mask_1 = cv2.fillConvexPoly(zeros, pts_1, (255,0,255))
 
     # draw the mask of the right track
-    pts_2 = np.array([[corner_right_4_x, corner_right_4_y],[corner_right_1_x, corner_right_1_y],[corner_right_2_x, corner_right_2_y],[corner_right_3_x, corner_right_3_y]], np.int32)
+    pts_2 = np.array([[pts.corner_right_4_x, pts.corner_right_4_y],[pts.corner_right_1_x, pts.corner_right_1_y],[pts.corner_right_2_x, pts.corner_right_2_y],[pts.corner_right_3_x, pts.corner_right_3_y]], np.int32)
     pts_2 = pts_2.reshape((-1, 1, 2))
     mask_2 = cv2.fillConvexPoly(zeros, pts_2, (255,0,255))
     image = 0.3*mask_1 + 0.3*mask_2 + + image
 
     # draw the mask of the right track
-    pts_3 = np.array([[upper_left_4_x, upper_left_4_y],[upper_left_1_x, upper_left_1_y],[upper_left_2_x, upper_left_2_y],[upper_left_3_x, upper_left_3_y]], np.int32)
+    pts_3 = np.array([[pts.upper_left_4_x, pts.upper_left_4_y],[pts.upper_left_1_x, pts.upper_left_1_y],[pts.upper_left_2_x, pts.upper_left_2_y],[pts.upper_left_3_x, pts.upper_left_3_y]], np.int32)
     pts_3 = pts_3.reshape((-1, 1, 2))
     mask_3 = cv2.fillConvexPoly(zeros, pts_3, (255,255,255))
 
     # draw the mask of the right track
-    pts_4 = np.array([[upper_right_4_x, upper_right_4_y],[upper_right_1_x, upper_right_1_y],[upper_right_2_x, upper_right_2_y],[upper_right_3_x, upper_right_3_y]], np.int32)
+    pts_4 = np.array([[pts.upper_right_4_x, pts.upper_right_4_y],[pts.upper_right_1_x, pts.upper_right_1_y],[pts.upper_right_2_x, pts.upper_right_2_y],[pts.upper_right_3_x, pts.upper_right_3_y]], np.int32)
     pts_4 = pts_4.reshape((-1, 1, 2))
     mask_4 = cv2.fillConvexPoly(zeros, pts_4, (255,255,255))
     image = 0.3*mask_1 + 0.3*mask_2 + 0.05*mask_3 + 0.05*mask_4 + image
 
     # # draw the mask of tape A
-    # pts_3 = np.array([[tape_A_4_x, tape_A_4_y],[tape_A_1_x, tape_A_1_y],[tape_A_2_x, tape_A_2_y],[tape_A_3_x, tape_A_3_y]], np.int32)
+    # pts_3 = np.array([[pts.tape_A_4_x, pts.tape_A_4_y],[pts.tape_A_1_x, pts.tape_A_1_y],[pts.tape_A_2_x, pts.tape_A_2_y],[pts.tape_A_3_x, pts.tape_A_3_y]], np.int32)
     # pts_3 = pts_3.reshape((-1, 1, 2))
     # mask_3 = cv2.fillConvexPoly(zeros, pts_3, (255,255,255))
 

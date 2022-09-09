@@ -1,0 +1,3 @@
+def InvalidAreas():
+
+    return True
