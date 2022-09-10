@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # camera calibration using zhang's method
-def undistort(frame):
+def undistort(image):
     fx = 1688.6581
     fy = 1688.8659
     cx = 998.322
@@ -19,6 +19,6 @@ def undistort(frame):
     d = np.array([
         k1, k2, p1, p2, k3
     ])
-    h, w = frame.shape[:2]
+    h, w = image.shape[:2]
     mapx, mapy = cv2.initUndistortRectifyMap(k, d, None, k, (w, h), 5)
-    return cv2.remap(frame, mapx, mapy, cv2.INTER_LINEAR)
+    return cv2.remap(image, mapx, mapy, cv2.INTER_LINEAR)

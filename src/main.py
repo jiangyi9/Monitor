@@ -1,7 +1,7 @@
 import cv2
 import time
-import undistortion
-import detection
+from undistortion import undistort
+from detection import detect
 
 pic_grab_path = "./pic.png"
 pic_undistorted_path = "./img_undistorted.png"
@@ -13,10 +13,10 @@ if __name__=="__main__":
     time.sleep(1)
 
     image = cv2.imread(pic_grab_path)
-    image = undistortion.undistort(image)
+    image = undistort(image)
     cv2.imwrite(pic_undistorted_path, image)
 
-    image = detection.detect(image)
+    image = detect(image)
 
     cv2.imwrite(pic_detected_path, image)
 

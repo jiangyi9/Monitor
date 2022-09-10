@@ -1,38 +1,27 @@
 import points as pts
+from quadrilateral import inQuadrilateralArea
 
 
-def isAtUpperLeft(testPoint):#testPoint为待测点[x,y]
+def isAtUpperLeft(testPoint):#Point为待测点[x,y]
 
-    # define area 1 as the left track (white)
-    LBPoint_1 = [pts.left_track_upper_LB_x, pts.left_track_upper_LB_y]
-    LTPoint_1 = [pts.left_track_upper_LT_x, pts.left_track_upper_LT_y]
-    RTPoint_1 = [pts.left_track_upper_RT_x, pts.left_track_upper_RT_y]
-    RBPoint_1 = [pts.left_track_upper_RB_x, pts.left_track_upper_RB_y]
-    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
-    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
-    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
-    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
-    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
-
+    in_area = inQuadrilateralArea(pts.left_track_upper_LBPoint,
+                                pts.left_track_upper_LTPoint,
+                                pts.left_track_upper_RTPoint,
+                                pts.left_track_upper_RBPoint,
+                                testPoint)
     if in_area: 
         return True
     else: 
         return False
 
 
-def isAtUpperRight(testPoint):#testPoint为待测点[x,y]
+def isAtUpperRight(testPoint):#Point为待测点[x,y]
 
-    # define area 2 as the left track (white)
-    LBPoint_1 = [pts.right_track_upper_LB_x, pts.right_track_upper_LB_y]
-    LTPoint_1 = [pts.right_track_upper_LT_x, pts.right_track_upper_LT_y]
-    RTPoint_1 = [pts.right_track_upper_RT_x, pts.right_track_upper_RT_y]
-    RBPoint_1 = [pts.right_track_upper_RB_x, pts.right_track_upper_RB_y]
-    a = (LTPoint_1[0]-LBPoint_1[0])*(testPoint[1]-LBPoint_1[1])-(LTPoint_1[1]-LBPoint_1[1])*(testPoint[0]-LBPoint_1[0])
-    b = (RTPoint_1[0]-LTPoint_1[0])*(testPoint[1]-LTPoint_1[1])-(RTPoint_1[1]-LTPoint_1[1])*(testPoint[0]-LTPoint_1[0])
-    c = (RBPoint_1[0]-RTPoint_1[0])*(testPoint[1]-RTPoint_1[1])-(RBPoint_1[1]-RTPoint_1[1])*(testPoint[0]-RTPoint_1[0])
-    d = (LBPoint_1[0]-RBPoint_1[0])*(testPoint[1]-RBPoint_1[1])-(LBPoint_1[1]-RBPoint_1[1])*(testPoint[0]-RBPoint_1[0])
-    in_area = (a>0 and b>0 and c>0 and d>0) or (a<0 and b<0 and c<0 and d<0)
-
+    in_area = inQuadrilateralArea(pts.right_track_upper_LBPoint,
+                                pts.right_track_upper_LTPoint,
+                                pts.right_track_upper_RTPoint,
+                                pts.right_track_upper_RBPoint,
+                                testPoint)
     if in_area: 
         return True
     else: 
@@ -40,14 +29,14 @@ def isAtUpperRight(testPoint):#testPoint为待测点[x,y]
 
 
 
-def correct_location(point):
-    if isAtUpperLeft(point):
-        point[0] = int(point[0] + 0.003*(point[0]-pts.center_x))
-        point[1] = int(point[1] - 0.003*(point[1]-pts.center_y))
-    elif isAtUpperRight(point):
-        point[0] = int(point[0] - 0.003*(point[0]-pts.center_x))
-        point[1] = int(point[1] - 0.003*(point[1]-pts.center_y))
+def correct_location(testPoint):
+    if isAtUpperLeft(testPoint):
+        testPoint[0] = int(testPoint[0] + 0.003*(testPoint[0]-pts.camera_center[0]))
+        testPoint[1] = int(testPoint[1] - 0.003*(testPoint[1]-pts.camera_center[1]))
+    elif isAtUpperRight(testPoint):
+        testPoint[0] = int(testPoint[0] - 0.003*(testPoint[0]-pts.camera_center[0]))
+        testPoint[1] = int(testPoint[1] - 0.003*(testPoint[1]-pts.camera_center[1]))
     else:
-        point[0] = int(point[0] + 0.012*(point[0]-pts.center_x))
-        point[1] = int(point[1] + 0.009*(point[1]-pts.center_y))
-    return point
+        testPoint[0] = int(testPoint[0] + 0.012*(testPoint[0]-pts.camera_center[0]))
+        testPoint[1] = int(testPoint[1] + 0.009*(testPoint[1]-pts.camera_center[1]))
+    return testPoint

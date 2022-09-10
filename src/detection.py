@@ -1,22 +1,19 @@
 # from pickle import TRUE
 # from re import X
 
-from time import time
 import numpy as np
-import os
+import cv2
 import points as pts
-import cubeCorrection as cube_correction
-import undistortion
-import converting
-import assigning
-import drawing
-import tracks
+from cubeCorrection import correct_location
+from converting import convert_array, convert_pix_to_mm
+from assigning import assign_arm
+from drawing import draw_masks, draw_point
+from tracks import isOnTrack
 
 # from PIL import ImageGrab
 # import pyscreenshot as ImageGrab
 # import sys
-import time
-import cv2
+
 
 
 # define the height of the desk (LOW) and the track (HIGH)
@@ -35,7 +32,7 @@ def detect(image):
     higher_yellow = np.array([33, 130, 255])  # define higher bound of "yellow"
     lower_blue = np.array([90,80,150])       # define lower bound of "blue"
     higher_blue = np.array([140,240,255])    # define higher bound of "blue"
-    lower_green = np.array([35,43,150])      # define lower bound of "green"
+    lower_green = np.array([35,80,150])      # define lower bound of "green"
     higher_green = np.array([77,255,255])   # define higher bound of "green"
 
 
@@ -76,16 +73,16 @@ def detect(image):
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = cube_correction.correct_location([cx,cy])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         red_point_list.append(cx)
         red_point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             red_point_list.append(HIGH)
         else:
             red_point_list.append(LOW)
@@ -103,16 +100,16 @@ def detect(image):
         box = np.int0(box) #取整
         cx = int(rect[0][0]) #获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = cube_correction.correct_location([cx,cy])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         blue_point_list.append(cx)
         blue_point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             blue_point_list.append(HIGH)
         else:
             blue_point_list.append(LOW)
@@ -130,16 +127,16 @@ def detect(image):
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = cube_correction.correct_location([cx,cy])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         yellow_point_list.append(cx)
         yellow_point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             yellow_point_list.append(HIGH)
         else:
             yellow_point_list.append(LOW)
@@ -157,16 +154,16 @@ def detect(image):
         box = np.int0(box)#取整
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
-        [cx,cy] = cube_correction.correct_location([cx,cy])
+        [cx,cy] = correct_location([cx,cy])
         point_list.append(cx)
         point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
         green_point_list.append(cx)
         green_point_list.append(cy)
-        if(tracks.isOnTrack([cx,cy])):
+        if(isOnTrack([cx,cy])):
             green_point_list.append(HIGH)
         else:
             green_point_list.append(LOW)
@@ -176,28 +173,28 @@ def detect(image):
 
 ######################     draw some lines/points to help debug STARTs    #####################
 
-    drawing.draw_points(image, pts.center_x, pts.center_y)
-    # drawing.draw_points(image, pts.left_track_LB_x, pts.left_track_LB_y)
-    # drawing.draw_points(image, pts.left_track_LT_x, pts.left_track_LT_y)
-    # drawing.draw_points(image, pts.left_track_RT_x, pts.left_track_RT_y)
-    # drawing.draw_points(image, pts.left_track_RB_x, pts.left_track_RB_y)
-    # drawing.draw_points(image, pts.right_track_LB_x, pts.right_track_LB_y)
-    # drawing.draw_points(image, pts.right_track_LT_x, pts.right_track_LT_y)
-    # drawing.draw_points(image, pts.right_track_RT_x, pts.right_track_RT_y)
-    # drawing.draw_points(image, pts.right_track_RB_x, pts.right_track_RB_y)
+    draw_point(image, pts.camera_center)
+    # draw_point(image, pts.left_track_LBPoint)
+    # draw_point(image, pts.left_track_LTPoint)
+    # draw_point(image, pts.left_track_RTPoint)
+    # draw_point(image, pts.left_track_RBPoint)
+    # draw_point(image, pts.right_track_LBPoint)
+    # draw_point(image, pts.right_track_LTPoint)
+    # draw_point(image, pts.right_track_RTPoint)
+    # draw_point(image, pts.right_track_RBPoint)
 
-    image = drawing.draw_masks(image)
+    image = draw_masks(image)
 
 ######################     draw some lines/points to help debug ENDs     #####################
 
 
-    point_array = converting.convert_array(point_list)
-    red_point_array = converting.convert_array(red_point_list)
-    blue_point_array = converting.convert_array(blue_point_list)
-    yellow_point_array = converting.convert_array(yellow_point_list)
-    green_point_array = converting.convert_array(green_point_list)
+    point_array = convert_array(point_list)
+    red_point_array = convert_array(red_point_list)
+    blue_point_array = convert_array(blue_point_list)
+    yellow_point_array = convert_array(yellow_point_list)
+    green_point_array = convert_array(green_point_list)
 
-    print(point_array)
+    # print(point_array)
 
     # print(green_point_array)
     # for x in green_point_array:
@@ -205,7 +202,7 @@ def detect(image):
 
     # print(Tracks.isOnTrack([1700,600]))
     # print(point_array)
-    assigning.assign_arm(point_array)
+    assign_arm(point_array)
 
     return image
 
