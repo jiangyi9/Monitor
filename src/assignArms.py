@@ -12,7 +12,7 @@ cubes_assigned_to_fixed_arm = []
 cubes_assigned_to_moving_arm = []
 
 # assign cubes to the closest arm
-def assign_arm(point_array):
+def assignArms(point_array):
     for point in point_array:
         distance_to_the_fixed_arm = (point[0]-pts.fixed_arm[0])*(point[0]-pts.fixed_arm[0]) + (point[1]-pts.fixed_arm[1])*(point[1]-pts.fixed_arm[1])
         distance_to_the_moving_arm = (point[0]-pts.moving_arm[0])*(point[0]-pts.moving_arm[0]) + (point[1]-pts.moving_arm[1])*(point[1]-pts.moving_arm[1])

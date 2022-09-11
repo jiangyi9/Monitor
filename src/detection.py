@@ -6,9 +6,10 @@ import cv2
 import points as pts
 from cubeCorrection import correct_location
 from converting import convert_array, convert_pix_to_mm
-from assigning import assign_arm
-from drawing import draw_masks, draw_point
-from tracks import isOnTrack
+from assignArms import assignArms
+from drawing import draw_areas, draw_point
+from inInvalidAreas import inInvalidAreas
+from isOnTrack import isOnTrack
 
 # from PIL import ImageGrab
 # import pyscreenshot as ImageGrab
@@ -74,6 +75,8 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
+        if(inInvalidAreas([cx,cy])):
+            continue
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -101,6 +104,8 @@ def detect(image):
         cx = int(rect[0][0]) #获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
+        if(inInvalidAreas([cx,cy])):
+            continue
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -128,6 +133,8 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
+        if(inInvalidAreas([cx,cy])):
+            continue
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -155,6 +162,8 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
+        if(inInvalidAreas([cx,cy])):
+            continue
         point_list.append(cx)
         point_list.append(cy)
         if(isOnTrack([cx,cy])):
@@ -183,7 +192,7 @@ def detect(image):
     # draw_point(image, pts.right_track_RTPoint)
     # draw_point(image, pts.right_track_RBPoint)
 
-    image = draw_masks(image)
+    image = draw_areas(image)
 
 ######################     draw some lines/points to help debug ENDs     #####################
 
@@ -202,7 +211,7 @@ def detect(image):
 
     # print(Tracks.isOnTrack([1700,600]))
     # print(point_array)
-    assign_arm(point_array)
+    assignArms(point_array)
 
     return image
 

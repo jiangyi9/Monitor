@@ -66,5 +66,5 @@ tape_E_RBPoint = [1700, 270]
 # tape F
 tape_F_LBPoint = [1858, 380]
 tape_F_LTPoint = [1864, 350]
-tape_F_RTPoint = [1877, 350]
-tape_F_RBPoint = [1874, 380]
+tape_F_RTPoint = [1882, 350]
+tape_F_RBPoint = [1880, 380]
