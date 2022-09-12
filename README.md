@@ -161,25 +161,34 @@ for cnt in cnts1: #red (BGR color space here)
 
 
 
-#### What I have done
-
-1. Defined the area of tracks, add the "height" attribute based on the location of the track.
-2. Correct the location information of cubes (especially cubes that are partly covered by the track, and cubes that are far away from the center.)
-3. Decide which of the two arms should be assigned for each cubes. (It's possible that neither arm is assigned, because the cubes are too far.)
-4. Export the relative x-y-z location information of cubes for 2 arms (in mm) as JSON file.
-5. Users can simply use the keyboard to control the program (need root permission).
-6. Tried to build the program as a Docker image, but meet (at least 2) issues that are very difficult to solve.
 
 
+#### Structure of the report
 
-#### Questions for the next step:
+```
+Title: Development of a Visual Monitoring System for an Assembly Line using Lidars and Image Processing Techniques
 
-1. About deployment: use shell? use virtual environment?
-1. Do I need to control the arm? How does the arm move?
-1. create a new JSON? Or add the data to an existing JSON?
-1. removing tapes
-1. Identify the arm (stick something)
-1. Maybe I can also start writing the report.
+1. Introduction
+  1.1 Requirements of the system
+  1.2 Contributions
+
+2. Overview of the system
+  2.1 System architecture
+  2.2 Related techniques
+
+3. Details of the system
+  3.1 Camera calibration
+  3.2 Cube detection based on image processing
+  3.3 Cube detection based on Rplidar
+  3.4 Data post-processing
+  3.5 System deployment
+
+4. Running results of the system
+  4.1 Comparison of different camera calibration schemes
+  4.2 System interface
+
+5. Conclusion
+```
 
 
 

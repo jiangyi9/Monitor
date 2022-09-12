@@ -11,11 +11,6 @@ from drawing import draw_areas, draw_point
 from inInvalidAreas import inInvalidAreas
 from isOnTrack import isOnTrack
 
-# from PIL import ImageGrab
-# import pyscreenshot as ImageGrab
-# import sys
-
-
 
 # define the height of the desk (LOW) and the track (HIGH)
 LOW = 25
@@ -75,7 +70,7 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
-        if(inInvalidAreas([cx,cy])):
+        if(inInvalidAreas([cx,cy])): # exclude tapes
             continue
         point_list.append(cx)
         point_list.append(cy)
@@ -83,12 +78,12 @@ def detect(image):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
-        red_point_list.append(cx)
-        red_point_list.append(cy)
-        if(isOnTrack([cx,cy])):
-            red_point_list.append(HIGH)
-        else:
-            red_point_list.append(LOW)
+        # red_point_list.append(cx)
+        # red_point_list.append(cy)
+        # if(isOnTrack([cx,cy])):
+        #     red_point_list.append(HIGH)
+        # else:
+        #     red_point_list.append(LOW)
         image = cv2.line(image,(cx+2,cy),(cx-2,cy),(0, 0, 255),2)
         image = cv2.line(image,(cx,cy+2),(cx,cy-2),(0, 0, 255),2)
         cv2.putText(image, 'red', (x, y - 5), font, 0.7, (0, 0, 255), 2)
@@ -104,7 +99,7 @@ def detect(image):
         cx = int(rect[0][0]) #获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
-        if(inInvalidAreas([cx,cy])):
+        if(inInvalidAreas([cx,cy])): # exclude tapes
             continue
         point_list.append(cx)
         point_list.append(cy)
@@ -112,12 +107,12 @@ def detect(image):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
-        blue_point_list.append(cx)
-        blue_point_list.append(cy)
-        if(isOnTrack([cx,cy])):
-            blue_point_list.append(HIGH)
-        else:
-            blue_point_list.append(LOW)
+        # blue_point_list.append(cx)
+        # blue_point_list.append(cy)
+        # if(isOnTrack([cx,cy])):
+        #     blue_point_list.append(HIGH)
+        # else:
+        #     blue_point_list.append(LOW)
         image = cv2.line(image,(cx+2,cy),(cx-2,cy),(255, 0, 0),2)
         image = cv2.line(image,(cx,cy+2),(cx,cy-2),(255, 0, 0),2)
         cv2.putText(image, 'blue', (x, y - 5), font, 0.7, (255, 0, 0), 2)
@@ -133,7 +128,7 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
-        if(inInvalidAreas([cx,cy])):
+        if(inInvalidAreas([cx,cy])): # exclude tapes
             continue
         point_list.append(cx)
         point_list.append(cy)
@@ -141,12 +136,12 @@ def detect(image):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
-        yellow_point_list.append(cx)
-        yellow_point_list.append(cy)
-        if(isOnTrack([cx,cy])):
-            yellow_point_list.append(HIGH)
-        else:
-            yellow_point_list.append(LOW)
+        # yellow_point_list.append(cx)
+        # yellow_point_list.append(cy)
+        # if(isOnTrack([cx,cy])):
+        #     yellow_point_list.append(HIGH)
+        # else:
+        #     yellow_point_list.append(LOW)
         image = cv2.line(image,(cx+2,cy),(cx-2,cy),(0, 255, 255),2)
         image = cv2.line(image,(cx,cy+2),(cx,cy-2),(0, 255, 255),2)
         cv2.putText(image, 'yellow', (x, y - 5), font, 0.5, (0, 255, 255), 2)
@@ -162,7 +157,7 @@ def detect(image):
         cx = int(rect[0][0])#获取中心点x坐标
         cy = int(rect[0][1])
         [cx,cy] = correct_location([cx,cy])
-        if(inInvalidAreas([cx,cy])):
+        if(inInvalidAreas([cx,cy])): # exclude tapes
             continue
         point_list.append(cx)
         point_list.append(cy)
@@ -170,17 +165,17 @@ def detect(image):
             point_list.append(HIGH)
         else:
             point_list.append(LOW)
-        green_point_list.append(cx)
-        green_point_list.append(cy)
-        if(isOnTrack([cx,cy])):
-            green_point_list.append(HIGH)
-        else:
-            green_point_list.append(LOW)
+        # green_point_list.append(cx)
+        # green_point_list.append(cy)
+        # if(isOnTrack([cx,cy])):
+        #     green_point_list.append(HIGH)
+        # else:
+        #     green_point_list.append(LOW)
         image = cv2.line(image,(cx+2,cy),(cx-2,cy),(0, 255, 0),2)
         image = cv2.line(image,(cx,cy+2),(cx,cy-2),(0, 255, 0),2)
         cv2.putText(image, 'green', (x, y - 5), font, 0.7, (0, 255, 0), 2)
 
-######################     draw some lines/points to help debug STARTs    #####################
+######################     draw some lines/points for DEBUG    #####################
 
     draw_point(image, pts.camera_center)
     # draw_point(image, pts.left_track_LBPoint)
@@ -194,14 +189,14 @@ def detect(image):
 
     image = draw_areas(image)
 
-######################     draw some lines/points to help debug ENDs     #####################
+######################     draw some lines/points for DEBUG     #####################
 
 
     point_array = convert_array(point_list)
-    red_point_array = convert_array(red_point_list)
-    blue_point_array = convert_array(blue_point_list)
-    yellow_point_array = convert_array(yellow_point_list)
-    green_point_array = convert_array(green_point_list)
+    # red_point_array = convert_array(red_point_list)
+    # blue_point_array = convert_array(blue_point_list)
+    # yellow_point_array = convert_array(yellow_point_list)
+    # green_point_array = convert_array(green_point_list)
 
     # print(point_array)
 

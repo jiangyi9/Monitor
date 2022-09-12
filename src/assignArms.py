@@ -4,8 +4,8 @@ from numpyArrayEncoder import NumpyArrayEncoder
 import json
 
 # define the maximum range of arms
-MAX_RANGE_OF_FIXED_ARM = 512
-MAX_RANGE_OF_MOVING_ARM = 512
+MAX_RANGE_OF_FIXED_ARM = 500
+MAX_RANGE_OF_MOVING_ARM = 500
 
 # define two lists to store cubes assigned to two arms, respectively.
 cubes_assigned_to_fixed_arm = []
