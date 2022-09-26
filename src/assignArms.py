@@ -39,9 +39,9 @@ def assignArms(point_array):
     print(cubes_assigned_to_moving_arm)
 
     # Serialize the assigned points, export them as JSON.
-    numpyData = {"cubes_assigned_to_fixed_arm": convert_array(cubes_assigned_to_fixed_arm), "cubes_assigned_to_moving_arm": convert_array(cubes_assigned_to_moving_arm)}
-    with open("numpyData.json", "w") as write_file:
-        json.dump(numpyData, write_file, cls=NumpyArrayEncoder, indent=2)
+    cubeLocation = {"cubes_assigned_to_fixed_arm": convert_array(cubes_assigned_to_fixed_arm), "cubes_assigned_to_moving_arm": convert_array(cubes_assigned_to_moving_arm)}
+    with open("cubeLocation.json", "w") as write_file:
+        json.dump(cubeLocation, write_file, cls=NumpyArrayEncoder, indent=2)
 
 # compute the Euclidean Distance between two vectors
 def distEclud(point, arm):
