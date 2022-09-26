@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
 import points as pts
+import assignArms
+
+# get the maximum range of arms
+MAX_RANGE_OF_FIXED_ARM = assignArms.MAX_RANGE_OF_FIXED_ARM
+MAX_RANGE_OF_MOVING_ARM = assignArms.MAX_RANGE_OF_MOVING_ARM
 
 def draw_point(image, testPoint):
     image = cv2.line(image,(testPoint[0]+3,testPoint[1]),(testPoint[0]-3,testPoint[1]),(255, 255, 255),10)
@@ -90,18 +95,24 @@ def draw_areas(image):
     pts_10 = pts_10.reshape((-1, 1, 2))
     mask_10 = cv2.fillConvexPoly(zeros, pts_10, (255,255,255))
 
-    # 绘制扇形  1.目标图片  2.椭圆圆心  3.长短轴长度  4.偏转角度  5.圆弧起始角度  6.终止角度  7.颜色  8.是否填充
-    cv2.ellipse(image,(pts.moving_arm[0],pts.moving_arm[1]-240),
-                (512,512),0,0,180,(255,111,131),4)
-    cv2.line(image, (pts.moving_arm[0]-512,pts.moving_arm[1]-240), (pts.moving_arm[0]+512,pts.moving_arm[1]-240), 
-                (255,111,131), 4, 4)
+    # draw the working range of the moving arm
+    cv2.ellipse(image,(pts.moving_arm[0],pts.moving_arm[1]),
+                (MAX_RANGE_OF_MOVING_ARM,MAX_RANGE_OF_MOVING_ARM),0,0,180,(255,111,131),4)
+    cv2.line(image, (pts.moving_arm[0]-MAX_RANGE_OF_MOVING_ARM,pts.moving_arm[1]), 
+                    (pts.moving_arm[0]+MAX_RANGE_OF_MOVING_ARM,pts.moving_arm[1]), 
+                    (255,111,131), 4, 4)
+    
+    # draw the original point of the moving arm (it is out of the scope of the image)
+    draw_point(image, [pts.moving_arm[0],pts.moving_arm[1]])
 
-    # 绘制扇形  1.目标图片  2.椭圆圆心  3.长短轴长度  4.偏转角度  5.圆弧起始角度  6.终止角度  7.颜色  8.是否填充
-    cv2.ellipse(image,(pts.fixed_arm[0],pts.fixed_arm[1]-240),
-                (512,512),0,0,180,(0,127,255),4)
-    cv2.line(image, (pts.fixed_arm[0]-512,pts.fixed_arm[1]-240), (pts.fixed_arm[0]+512,pts.fixed_arm[1]-240), 
-                (0,127,255), 4, 4)
-    draw_point(image, [pts.fixed_arm[0],pts.fixed_arm[1]-240])
+    # draw the working range of the fixed arm
+    cv2.ellipse(image,(pts.fixed_arm[0],pts.fixed_arm[1]),
+                (MAX_RANGE_OF_FIXED_ARM,MAX_RANGE_OF_FIXED_ARM),0,0,180,(0,127,255),4)
+    cv2.line(image, (pts.fixed_arm[0]-MAX_RANGE_OF_FIXED_ARM,pts.fixed_arm[1]), 
+                    (pts.fixed_arm[0]+MAX_RANGE_OF_FIXED_ARM,pts.fixed_arm[1]), 
+                    (0,127,255), 4, 4)
+
+    # draw the original point of the fixed arm
     draw_point(image, [pts.fixed_arm[0],pts.fixed_arm[1]])
 
     image = 0.6*mask_10 + image

@@ -169,7 +169,7 @@ for cnt in cnts1: #red (BGR color space here)
 Title: Development of a Visual Monitoring System for an Assembly Line using Lidars and Image Processing Techniques
 
 1. Introduction
-  1.1 Requirements of the system
+  1.1 Requirements of the system (motivation, automated, ideas, convey the information to the smart robots)
   1.2 Contributions
 
 2. Overview of the system

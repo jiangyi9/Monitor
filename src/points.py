@@ -4,10 +4,10 @@
 camera_center = [880, 700]
 
 # the place of the fixed arm
-fixed_arm = [1202, 758]
+fixed_arm = [1202, 518]
 
 # the place of the moving arm
-moving_arm = [987, 152]
+moving_arm = [987, -88]
 
 # the corner points of the left tracker
 left_track_LBPoint = [819, 1035]

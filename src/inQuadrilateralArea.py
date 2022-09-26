@@ -1,4 +1,5 @@
 
+# judge whether the testPoint falls in a quadrilateral area
 def inQuadrilateralArea(LBPoint, LTPoint, RTPoint, RBPoint, testPoint):
     a = (LTPoint[0]-LBPoint[0])*(testPoint[1]-LBPoint[1])-(LTPoint[1]-LBPoint[1])*(testPoint[0]-LBPoint[0])
     b = (RTPoint[0]-LTPoint[0])*(testPoint[1]-LTPoint[1])-(RTPoint[1]-LTPoint[1])*(testPoint[0]-LTPoint[0])
