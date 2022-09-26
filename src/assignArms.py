@@ -23,6 +23,7 @@ def assignArms(point_array):
 
         # If the point falls in the fixed-arm (orange) semi-circle, then assign the point to the fixed arm.
         if distance_to_the_fixed_arm < MAX_RANGE_OF_FIXED_ARM and point[1]-pts.fixed_arm[1] > 0:
+            # append the relative location information (we see pts.fixed_arm as the original point).
             cubes_assigned_to_fixed_arm.append([convert_pix_to_mm(point[0],pts.fixed_arm[0]),
                                                 convert_pix_to_mm(point[1],pts.fixed_arm[1]),
                                                 point[2],
@@ -30,13 +31,14 @@ def assignArms(point_array):
         
         # If the point falls in the moving-arm (purple) semi-circle, then assign the point to the moving arm.
         elif distance_to_the_moving_arm < MAX_RANGE_OF_MOVING_ARM and point[1]-pts.moving_arm[1]>0:
+            # append the relative location information (we see pts.movings_arm as the original point).
             cubes_assigned_to_moving_arm.append([convert_pix_to_mm(point[0],pts.moving_arm[0]),
                                                 convert_pix_to_mm(point[1],pts.moving_arm[1]),
                                                 point[2],
                                                 point[3]])
 
-    print(cubes_assigned_to_fixed_arm)
-    print(cubes_assigned_to_moving_arm)
+    print("cubes relative to fixed arm: "+str(cubes_assigned_to_fixed_arm))
+    print("cubes relative to moving arm: "+str(cubes_assigned_to_moving_arm))
 
     # Serialize the assigned points, export them as JSON.
     cubeLocation = {"cubes_assigned_to_fixed_arm": convert_array(cubes_assigned_to_fixed_arm), "cubes_assigned_to_moving_arm": convert_array(cubes_assigned_to_moving_arm)}

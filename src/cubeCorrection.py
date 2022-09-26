@@ -1,8 +1,8 @@
 import points as pts
 from inQuadrilateralArea import inQuadrilateralArea
 
-
-def isAtUpperLeft(testPoint):#Point为待测点[x,y]
+# judge whether the cubes falls on the close upper of the left track.
+def isAtUpperLeft(testPoint):
 
     in_area = inQuadrilateralArea(pts.left_track_upper_LBPoint,
                                 pts.left_track_upper_LTPoint,
@@ -14,8 +14,8 @@ def isAtUpperLeft(testPoint):#Point为待测点[x,y]
     else: 
         return False
 
-
-def isAtUpperRight(testPoint):#Point为待测点[x,y]
+# judge whether the cubes falls on the close upper of the right track.
+def isAtUpperRight(testPoint):
 
     in_area = inQuadrilateralArea(pts.right_track_upper_LBPoint,
                                 pts.right_track_upper_LTPoint,
@@ -28,7 +28,7 @@ def isAtUpperRight(testPoint):#Point为待测点[x,y]
         return False
 
 
-
+# slight correct the location information of cubes
 def correct_location(testPoint):
     if isAtUpperLeft(testPoint):
         testPoint[0] = int(testPoint[0] + 0.003*(testPoint[0]-pts.camera_center[0]))

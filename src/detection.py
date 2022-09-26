@@ -9,9 +9,9 @@ from inInvalidAreas import inInvalidAreas
 from isOnTrack import isOnTrack
 
 
-# define the height of the desk (LOW) and the track (HIGH)
-LOW = 25
-HIGH = 105
+# define the height of the desk (LOW) and the track (HIGH) in mm.
+LOW = 16
+HIGH = 67
 
 
 def detect(image):

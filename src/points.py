@@ -3,10 +3,10 @@
 # logic center of the camera (be used for point correction)
 camera_center = [880, 700]
 
-# the place of the fixed arm
+# the center of the fixed arm
 fixed_arm = [1202, 518]
 
-# the place of the moving arm
+# the center of the moving arm
 moving_arm = [987, -88]
 
 # the corner points of the left tracker

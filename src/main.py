@@ -3,9 +3,9 @@ import time
 from undistortion import undistort
 from detection import detect
 
-pic_grab_path = "./pic.png"
+pic_grab_path = "./img.png"
 pic_undistorted_path = "./img_undistorted.png"
-pic_detected_path = "./image_detection.png"
+pic_detected_path = "./img_detection.png"
 
 
 if __name__=="__main__":  
